@@ -1,6 +1,6 @@
 ---
 name: icarus-coaching
-description: Monta, adapta e audita treinos de musculação para praticantes naturais. Use quando o usuário pedir ficha, divisão, periodização, substituição de exercícios, progressão, análise de volume ou diagnóstico de estagnação; não use para perguntas puramente conceituais sem programa pessoal.
+description: Monta, adapta, acompanha e audita treinos de musculação para naturais, com memória de cargas e evolução. Use para ficha, treino do dia, registro de séries, progressão, volume, periodização ou estagnação; não use para perguntas puramente conceituais sem contexto pessoal.
 ---
 
 # Icarus Coaching
@@ -17,6 +17,16 @@ Entregue uma decisão executável, individualizada e rastreável. Preserve a ide
 6. Para ficha completa, use `knowledge/templates/TRAINING_PLAN.md`.
 7. Antes de entregar, aplique [references/quality-check.md](references/quality-check.md).
 
+## Modo parceiro ao vivo
+
+Quando o usuário perguntar o treino do dia, iniciar/encerrar uma sessão, ditar uma série ou pedir evolução:
+
+1. Leia [references/live-workout.md](references/live-workout.md).
+2. Use exclusivamente `.agents/skills/icarus-coaching/scripts/icarus_tracker.py` para operações no histórico.
+3. O comando `today` é a fonte do treino atual; `start`, `log-set`, `correct-last-set`, `finish` e `cancel` registram eventos; `progress` calcula tendência; `validate` confere integridade.
+4. Confirme uma gravação somente após retorno bem-sucedido.
+5. Se o CLI indicar onboarding pendente, conduza-o antes do primeiro treino e valide o programa.
+
 ## Regras
 
 - Não trate uma faixa de volume do corpus como prescrição universal.
@@ -25,3 +35,4 @@ Entregue uma decisão executável, individualizada e rastreável. Preserve a ide
 - Técnicas como top set, back-off, cluster e drop são opcionais e precisam de finalidade.
 - Se houver dor, doença, retorno ou população especial, leia `knowledge/SAFETY.md` e reduza o escopo.
 - Quando atribuir um princípio ao corpus, confirme a fonte em `knowledge/SOURCES.md`.
+- Não use memória conversacional como substituto de `training/data/`.

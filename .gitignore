@@ -1,1 +1,8 @@
 .DS_Store
+__pycache__/
+*.py[cod]
+
+# Dados pessoais de treino. Permanecem disponíveis ao Codex Remote no mesmo
+# computador/projeto, mas não são enviados ao Git por acidente.
+training/data/*
+!training/data/.gitkeep

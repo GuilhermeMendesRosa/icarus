@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "program_id": "onboarding-required",
+  "name": "Programa ainda não configurado",
+  "status": "draft",
+  "started_on": null,
+  "rotation": [],
+  "sessions": {},
+  "review": {
+    "after_completed_sessions": null,
+    "notes": null
+  },
+  "notes": "Complete o onboarding antes de alterar status para active."
+}

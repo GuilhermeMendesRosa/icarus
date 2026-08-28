@@ -1,4 +1,4 @@
 interface:
   display_name: "Icarus Coaching"
-  short_description: "Cria e ajusta treinos naturais sob medida"
-  default_prompt: "Use $icarus-coaching para montar ou ajustar meu treino com base na minha rotina."
+  short_description: "Acompanha treinos, cargas e evolução natural"
+  default_prompt: "Use $icarus-coaching para dizer meu treino de hoje e acompanhar minhas cargas série a série."

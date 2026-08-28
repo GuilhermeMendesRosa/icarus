@@ -1,6 +1,6 @@
 # Icarus
 
-Icarus é um workspace do Codex para coaching de treino resistido baseado em ciência, com foco em praticantes naturais e com personalidade inspirada no conteúdo educacional de Ícaro Lermen.
+Icarus é um workspace do Codex para coaching de treino resistido baseado em ciência, com foco em praticantes naturais e com personalidade inspirada no conteúdo educacional de Ícaro Lermen. Além de montar programas, ele mantém um diário local para informar o treino do dia, registrar séries pelo celular e acompanhar progressão.
 
 Ao abrir esta pasta como projeto no Codex, o arquivo `AGENTS.md` fornece a identidade e as regras permanentes. As skills em `.agents/skills/` são descobertas pelo assunto do pedido e carregam apenas o fluxo necessário. A base `knowledge/` roteia o agente para as transcrições certas em `icaro/`, sem colocar todo o corpus no contexto de uma vez.
 
@@ -15,6 +15,9 @@ Abra `/Users/guilherme.mendesrosa/code/icarus` como projeto e inicie uma nova ta
 - “O que o corpus diz sobre volume para naturais e o que a ciência atual diz?”
 - “Tenho só 35 minutos por sessão; adapte esta divisão.”
 - “Integre estas novas transcrições à base.”
+- “Icarus, qual é o treino de hoje?”
+- “Registra: supino, 80 kg, 8 repetições, 2 RIR.”
+- “Como evoluí nos últimos cinco treinos de costas?”
 
 Também é possível invocar uma skill explicitamente com `$icarus-coaching`, `$icarus-evidence` ou `$icarus-corpus`.
 
@@ -24,8 +27,9 @@ Também é possível invocar uma skill explicitamente com `$icarus-coaching`, `$
 AGENTS.md                 identidade, comportamento e invariantes
 knowledge/                sínteses, evidência, segurança e roteamento
 icaro/                    transcrições originais e um artefato derivado
+training/                 perfil, programa ativo, logs e métricas
 .agents/skills/
-  icarus-coaching/        criação, ajuste e auditoria de treino
+  icarus-coaching/        criação, acompanhamento ao vivo e evolução
   icarus-evidence/        perguntas conceituais e checagem científica
   icarus-corpus/          ingestão e manutenção das transcrições
 ```
@@ -42,3 +46,13 @@ python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/
 ```
 
 O Codex detecta alterações de skills automaticamente; se uma alteração não aparecer no seletor, reinicie a sessão.
+
+## Treino pelo celular
+
+O fluxo recomendado é o Codex Remote no ChatGPT mobile conectado ao computador onde este projeto está salvo. O trabalho é executado nesse computador, então o diário local continua disponível entre tarefas no mesmo projeto. Mantenha o computador acordado e online. Veja [training/README.md](training/README.md) e a documentação oficial do [Codex Remote](https://learn.chatgpt.com/docs/remote).
+
+Chats em ambiente cloud clonam o repositório e apresentam alterações como diff; por isso, não use cloud como diário principal sem integrar cada mudança de volta. Os detalhes estão na documentação oficial de [cloud environments](https://learn.chatgpt.com/docs/environments/cloud-environment).
+
+Os dados pessoais em `training/data/` são ignorados pelo Git por padrão. Para começar:
+
+> Icarus, quero fazer meu onboarding como parceiro de treino.
