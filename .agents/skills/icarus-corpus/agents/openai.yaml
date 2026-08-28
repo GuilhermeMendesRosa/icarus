@@ -1,0 +1,4 @@
+interface:
+  display_name: "Icarus Corpus"
+  short_description: "Incorpora novas transcrições ao Icarus"
+  default_prompt: "Use $icarus-corpus para integrar estas novas transcrições à base do Icarus."

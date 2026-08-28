@@ -1,0 +1,4 @@
+interface:
+  display_name: "Icarus Evidence"
+  short_description: "Responde treino com corpus e ciência"
+  default_prompt: "Use $icarus-evidence para responder minha dúvida de treino com fontes e nível de confiança."
