@@ -51,6 +51,18 @@ O Codex detecta alterações de skills automaticamente; se uma alteração não 
 
 O fluxo recomendado é o Codex Remote no ChatGPT mobile conectado ao computador onde este projeto está salvo. O trabalho é executado nesse computador, então o diário local continua disponível entre tarefas no mesmo projeto. Mantenha o computador acordado e online. Veja [training/README.md](training/README.md) e a documentação oficial do [Codex Remote](https://learn.chatgpt.com/docs/remote).
 
+### Projeto comum do ChatGPT (sem computador)
+
+Se a prioridade é usar o Icarus pelo celular sem depender do computador, use a versão portátil em um Projeto comum do ChatGPT. Ela mantém a conversa, a base de coaching e resumos salvos no próprio Projeto, mas **não** inclui o diário local validado pelo tracker. Projetos sincronizam chats, arquivos e instruções entre dispositivos; veja a documentação oficial de [Projetos no ChatGPT](https://help.openai.com/pt-br/articles/10169521-projetos-no-chatgpt).
+
+1. No ChatGPT, crie o projeto **Icarus — Treino**.
+2. Abra [`exports/chatgpt/PROJECT_INSTRUCTIONS.md`](exports/chatgpt/PROJECT_INSTRUCTIONS.md), copie o bloco e cole em **Configurações do projeto → Instruções do projeto**.
+3. Envie apenas [`exports/chatgpt/ICARUS_CONTEXT.md`](exports/chatgpt/ICARUS_CONTEXT.md) como arquivo de referência.
+4. No primeiro chat, envie: `Icarus, quero fazer meu onboarding como parceiro de treino.`
+5. Mantenha um chat contínuo para o diário. Ao final de cada sessão, peça o **Resumo para salvar** e salve a resposta como fonte do Projeto.
+
+Não envie `training/data/`, que contém dados pessoais locais. Essa versão começa o histórico do zero e não deve declarar evolução com base em memória conversacional não confirmada. Para comparações confiáveis de carga e histórico append-only, continue usando o fluxo local do Codex.
+
 Chats em ambiente cloud clonam o repositório e apresentam alterações como diff; por isso, não use cloud como diário principal sem integrar cada mudança de volta. Os detalhes estão na documentação oficial de [cloud environments](https://learn.chatgpt.com/docs/environments/cloud-environment).
 
 Os dados pessoais em `training/data/` são ignorados pelo Git por padrão. Para começar:
