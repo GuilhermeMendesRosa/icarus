@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 
-# Dados pessoais de treino. Permanecem disponíveis ao Codex Remote no mesmo
-# computador/projeto, mas não são enviados ao Git por acidente.
-training/data/*
-!training/data/.gitkeep
+# training/data/ é versionado intencionalmente: o repositório privado é o backend
+# persistente do Icarus no ChatGPT. Não torne este repositório público sem antes
+# remover os dados pessoais e, se necessário, reescrever o histórico do Git.
