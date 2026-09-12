@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "onboarding_complete": false,
+  "onboarding_complete": true,
   "athlete": {
     "preferred_name": null,
     "timezone": "America/Sao_Paulo",
@@ -19,15 +19,15 @@
     "preferred_days": []
   },
   "experience": {
-    "level": null,
-    "years": null,
-    "notes": "Pendente confirmacao do nivel de treino; prescricao inicial privilegia exercicios estaveis e progressao simples."
+    "level": "intermediario",
+    "years": 4,
+    "notes": "Treina ha cerca de 4 anos."
   },
   "constraints": {
-    "equipment": ["academia comercial - provisoriamente assumida"],
+    "equipment": ["academia comercial; barra, halteres, maquinas e polias conforme o programa"],
     "avoid_exercises": ["agachamento", "stiff", "levantamento terra", "exercicios com foco principal em gluteos"],
     "pain_or_restrictions": [],
-    "notes": "Usuario pediu explicitamente para evitar agachamento, stiff, terra e movimentos cujo objetivo principal seja gluteo. Equipamentos exatos e dores/restricoes ainda nao confirmados."
+    "notes": "Usuario pediu explicitamente para evitar agachamento, stiff, terra e movimentos cujo objetivo principal seja gluteo. Relatou ausencia de dor ou restricao relevante no inicio do programa."
   },
   "recovery_baseline": {
     "sleep_hours": null,
