@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "program_id": "upper-focus-4x-2026-09",
+  "name": "Upper Focus 4x - 60 min",
+  "status": "draft",
+  "started_on": null,
+  "rotation": ["A", "B", "C", "D"],
+  "sessions": {
+    "A": {
+      "name": "Upper A - Peito e Costas",
+      "objective": "Priorizar peito e costas com volume moderado, mantendo ombros e bracos.",
+      "exercises": [
+        {"exercise_id":"chest-press-maquina","name":"Chest press na maquina","target_sets":3,"rep_range":[6,10],"target_rir":[1,2],"rest_seconds":150,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":5},"notes":"Amplitude confortavel e tecnica padronizada."},
+        {"exercise_id":"remada-maquina-articulada","name":"Remada na maquina articulada","target_sets":3,"rep_range":[6,10],"target_rir":[1,2],"rest_seconds":150,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":5},"notes":"Use sempre a mesma maquina/configuracao."},
+        {"exercise_id":"chest-press-inclinado-maquina","name":"Chest press inclinado na maquina","target_sets":2,"rep_range":[8,12],"target_rir":[1,2],"rest_seconds":120,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":5},"notes":"Foco em peitoral superior sem sacrificar amplitude."},
+        {"exercise_id":"puxada-frente-neutra","name":"Puxada na frente com pegada neutra ou semi-supinada","target_sets":2,"rep_range":[8,12],"target_rir":[1,2],"rest_seconds":120,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":5},"notes":"Mantenha o tronco estavel e cotovelos acompanhando a linha da puxada."},
+        {"exercise_id":"elevacao-lateral-maquina","name":"Elevacao lateral na maquina","target_sets":3,"rep_range":[10,15],"target_rir":[1,2],"rest_seconds":75,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":2.5},"notes":"Priorize controle e amplitude repetivel."},
+        {"exercise_id":"rosca-polia","name":"Rosca na polia","target_sets":2,"rep_range":[8,12],"target_rir":[1,2],"rest_seconds":75,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":2.5},"notes":"Pode alternar com triceps em superset nao concorrente para caber em 60 min."},
+        {"exercise_id":"triceps-polia","name":"Triceps na polia","target_sets":2,"rep_range":[8,12],"target_rir":[1,2],"rest_seconds":75,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":2.5},"notes":"Pode alternar com biceps em superset nao concorrente para caber em 60 min."}
+      ]
+    },
+    "B": {
+      "name": "Lower B - Pernas enxutas + Ombros",
+      "objective": "Treinar quadriceps, posteriores e panturrilhas sem agachamento, hinge ou exercicio focado em gluteos; usar o tempo restante para deltoides.",
+      "exercises": [
+        {"exercise_id":"cadeira-extensora","name":"Cadeira extensora","target_sets":4,"rep_range":[8,12],"target_rir":[1,2],"rest_seconds":105,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":5},"notes":"Quadriceps como principal foco de membros inferiores."},
+        {"exercise_id":"cadeira-flexora","name":"Cadeira flexora","target_sets":4,"rep_range":[8,12],"target_rir":[1,2],"rest_seconds":105,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":5},"notes":"Posteriores sem padrao de hinge."},
+        {"exercise_id":"panturrilha-maquina","name":"Panturrilha na maquina","target_sets":4,"rep_range":[10,15],"target_rir":[1,2],"rest_seconds":75,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":5},"notes":"Pausa breve no alongamento e no pico quando confortavel."},
+        {"exercise_id":"elevacao-lateral-polia","name":"Elevacao lateral unilateral na polia","target_sets":3,"rep_range":[10,15],"target_rir":[1,2],"rest_seconds":60,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":1.25},"notes":"Carga registrada na pilha da mesma polia/configuracao."},
+        {"exercise_id":"reverse-pec-deck","name":"Crucifixo inverso / reverse pec deck","target_sets":3,"rep_range":[10,15],"target_rir":[1,2],"rest_seconds":75,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":2.5},"notes":"Deltoide posterior e costas altas; evite transformar em encolhimento."}
+      ]
+    },
+    "C": {
+      "name": "Upper C - Costas, Peito e Bracos",
+      "objective": "Segundo estimulo forte de superiores com enfase complementar em costas, peito e bracos.",
+      "exercises": [
+        {"exercise_id":"puxada-fechada-maquina","name":"Puxada fechada na maquina","target_sets":3,"rep_range":[6,10],"target_rir":[1,2],"rest_seconds":150,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":5},"notes":"Use sempre a mesma maquina/configuracao."},
+        {"exercise_id":"supino-inclinado-halteres","name":"Supino inclinado com halteres","target_sets":3,"rep_range":[6,10],"target_rir":[1,2],"rest_seconds":150,"load_context":"per_hand","progression":{"type":"double_progression","increment_kg":2},"notes":"Carga por mao; se preferir maquina, manter um exercise_id separado."},
+        {"exercise_id":"remada-baixa-polia","name":"Remada baixa na polia","target_sets":3,"rep_range":[8,12],"target_rir":[1,2],"rest_seconds":120,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":5},"notes":"Tronco estavel e amplitude repetivel."},
+        {"exercise_id":"pec-deck","name":"Pec deck / fly na maquina","target_sets":2,"rep_range":[10,15],"target_rir":[1,2],"rest_seconds":90,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":2.5},"notes":"Controle o alongamento sem forcar amplitude desconfortavel."},
+        {"exercise_id":"elevacao-lateral-maquina","name":"Elevacao lateral na maquina","target_sets":3,"rep_range":[10,15],"target_rir":[1,2],"rest_seconds":75,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":2.5},"notes":"Mesmo exercise_id do treino A somente se for a mesma maquina/configuracao."},
+        {"exercise_id":"rosca-scott-maquina","name":"Rosca Scott na maquina","target_sets":3,"rep_range":[8,12],"target_rir":[1,2],"rest_seconds":75,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":2.5},"notes":"Pode alternar com triceps para economizar tempo."},
+        {"exercise_id":"triceps-acima-cabeca-polia","name":"Triceps acima da cabeca na polia","target_sets":3,"rep_range":[8,12],"target_rir":[1,2],"rest_seconds":75,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":2.5},"notes":"Use amplitude confortavel para cotovelos e ombros."}
+      ]
+    },
+    "D": {
+      "name": "Lower D - Pernas enxutas + Bracos",
+      "objective": "Segundo estimulo minimo eficiente para pernas, reservando boa parte da sessao para bracos e deltoide medial.",
+      "exercises": [
+        {"exercise_id":"cadeira-extensora","name":"Cadeira extensora","target_sets":3,"rep_range":[10,15],"target_rir":[1,2],"rest_seconds":90,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":5},"notes":"Mesmo exercise_id do treino B somente se for a mesma maquina/configuracao."},
+        {"exercise_id":"cadeira-flexora","name":"Cadeira flexora","target_sets":3,"rep_range":[10,15],"target_rir":[1,2],"rest_seconds":90,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":5},"notes":"Mesmo exercise_id do treino B somente se for a mesma maquina/configuracao."},
+        {"exercise_id":"panturrilha-maquina","name":"Panturrilha na maquina","target_sets":3,"rep_range":[10,15],"target_rir":[1,2],"rest_seconds":75,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":5},"notes":"Mesmo exercise_id do treino B somente se for a mesma maquina/configuracao."},
+        {"exercise_id":"rosca-inclinada-halteres","name":"Rosca inclinada com halteres","target_sets":3,"rep_range":[8,12],"target_rir":[1,2],"rest_seconds":75,"load_context":"per_hand","progression":{"type":"double_progression","increment_kg":1},"notes":"Carga por mao."},
+        {"exercise_id":"triceps-polia","name":"Triceps na polia","target_sets":3,"rep_range":[10,15],"target_rir":[1,2],"rest_seconds":75,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":2.5},"notes":"Mesmo exercise_id do treino A somente se for a mesma polia/configuracao."},
+        {"exercise_id":"elevacao-lateral-polia","name":"Elevacao lateral unilateral na polia","target_sets":3,"rep_range":[12,15],"target_rir":[1,2],"rest_seconds":60,"load_context":"machine_stack","progression":{"type":"double_progression","increment_kg":1.25},"notes":"Mesmo exercise_id do treino B somente se for a mesma polia/configuracao."}
+      ]
+    }
+  },
+  "review": {
+    "after_completed_sessions": 8,
+    "notes": "Revisar apos duas rotacoes completas. Priorizar progresso com tecnica e RIR estaveis; nao aumentar volume por uma unica sessao ruim."
+  },
+  "notes": "Rascunho individual baseado nos dados confirmados: 4x/semana, cerca de 60 min, foco em superiores, sem agachamento, stiff, terra ou exercicios cujo objetivo principal seja gluteo. Assume provisoriamente acesso a academia comercial. Ativar apenas apos confirmar equipamento disponivel, nivel de experiencia e ausencia/presenca de dor ou restricao relevante."
+}
