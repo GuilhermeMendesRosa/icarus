@@ -4,29 +4,30 @@ Use este fluxo quando o usuário estiver na academia, perguntar pelo treino do d
 
 ## Invariantes
 
-- O disco é a memória; a conversa não é.
-- Leia o estado com o CLI antes de responder sobre hoje ou evolução.
-- Grave cada série assim que ela for informada e confirme somente após sucesso do comando.
+- `training/data/` é a memória; a conversa não é.
+- Recarregue o estado persistente antes de responder sobre hoje ou evolução.
+- Grave cada série assim que ela for informada e confirme somente após sucesso da escrita.
 - Nunca invente peso, repetição, RIR, data ou sessão ausente.
-- Treinos finalizados são imutáveis; não edite JSONL manualmente.
+- Treinos finalizados são imutáveis; correções são novos eventos append-only.
 - Não avance a rotação em sessão cancelada.
+- No ChatGPT, use `github-memory.md`; em ambiente local, o tracker pode ser usado.
 
 ## Onboarding
 
-Se `today` indicar onboarding pendente:
+Se o estado indicar onboarding pendente:
 
 1. leia `training/SCHEMA.md` e `knowledge/PROGRAM_DESIGN.md`;
 2. colete apenas dados que mudam o programa;
-3. preencha `training/data/profile.json` e `training/data/active_program.json`;
+3. preencha `training/data/profile.json` e `training/data/active_program.json` usando o backend persistente disponível;
 4. use IDs estáveis e declare como a carga será contabilizada;
-5. execute `validate`;
+5. valide estruturalmente perfil e programa conforme `training/SCHEMA.md`;
 6. só marque perfil completo e programa ativo quando não houver erro.
 
 Não use o artefato A01 como programa ativo sem confirmação explícita do usuário.
 
 ## “Qual é o treino de hoje?”
 
-Execute `today`. Informe:
+Execute semanticamente `today`. Informe:
 
 - sessão e objetivo;
 - exercícios na ordem;
@@ -38,11 +39,13 @@ Não despeje análise longa antes do treino. Priorize o próximo passo.
 
 ## Início
 
-Ao usuário confirmar que começou, execute `start`. Prontidão, sono e peso são opcionais; não transforme o começo do treino em interrogatório. Se houver dor ou sintoma relevante, aplique `knowledge/SAFETY.md` antes de iniciar.
+Ao usuário confirmar que começou, execute semanticamente `start`. Prontidão, sono e peso são opcionais; não transforme o começo do treino em interrogatório. Se houver dor ou sintoma relevante, aplique `knowledge/SAFETY.md` antes de iniciar.
+
+Crie um `session_started` no log da sessão e só diga que o treino foi iniciado depois de a persistência ter sucesso.
 
 ## Registro de série
 
-Converta linguagem natural para `log-set`. Resolva antes de gravar quando houver ambiguidade material:
+Converta linguagem natural para `set_logged`. Resolva antes de gravar quando houver ambiguidade material:
 
 - “20 de cada lado” em barra: confirme se a barra entra no total e seu peso;
 - halteres: registre `per_hand`, não some os dois;
@@ -56,17 +59,17 @@ Depois de registrar, responda em no máximo três blocos curtos:
 2. comparação relevante com a exposição anterior;
 3. orientação para a próxima série, sem alterar o programa por impulso.
 
-Se o usuário corrigir um dado, não apague a linha. Execute `correct-last-set`, que acrescenta `set_corrected` apontando para o evento substituído. Confirme o valor efetivo depois do sucesso. Se não estiver claro qual série deve ser corrigida, esclareça antes de gravar.
+Se o usuário corrigir um dado, não apague o evento anterior. Acrescente `set_corrected` com `replaces_event_id` apontando para o evento substituído. Confirme o valor efetivo depois do sucesso. Se não estiver claro qual série deve ser corrigida, esclareça antes de gravar.
 
 ## Encerramento
 
-Execute `finish` apenas quando o usuário disser que terminou. Entregue resumo breve, PRs comparáveis, evolução ou queda relevante e a próxima sessão da rotação. Não diagnostique fadiga com uma única sessão.
+Execute semanticamente `finish` apenas quando o usuário disser que terminou. Grave `session_completed`, então entregue resumo breve, PRs comparáveis, evolução ou queda relevante e a próxima sessão da rotação. Não diagnostique fadiga com uma única sessão.
 
-Use `cancel` para treino abandonado; registre motivo sem julgamento.
+Use `session_cancelled` para treino abandonado; registre motivo sem julgamento e não avance a rotação.
 
 ## Evolução
 
-Execute `progress`, opcionalmente filtrando exercício. Interprete:
+Execute semanticamente `progress`, opcionalmente filtrando exercício. Interprete:
 
 - tendência de e1RM junto com RIR;
 - carga/repetições no mesmo padrão;

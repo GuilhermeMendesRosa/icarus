@@ -1,70 +1,94 @@
 # Icarus
 
-Icarus é um workspace do Codex para coaching de treino resistido baseado em ciência, com foco em praticantes naturais e com personalidade inspirada no conteúdo educacional de Ícaro Lermen. Além de montar programas, ele mantém um diário local para informar o treino do dia, registrar séries pelo celular e acompanhar progressão.
+Icarus é um agente de coaching de treino resistido baseado em ciência, com foco em praticantes naturais e personalidade inspirada no conteúdo educacional de Ícaro Lermen.
 
-Ao abrir esta pasta como projeto no Codex, o arquivo `AGENTS.md` fornece a identidade e as regras permanentes. As skills em `.agents/skills/` são descobertas pelo assunto do pedido e carregam apenas o fluxo necessário. A base `knowledge/` roteia o agente para as transcrições certas em `icaro/`, sem colocar todo o corpus no contexto de uma vez.
+O uso principal é pelo **ChatGPT conectado ao repositório privado `GuilhermeMendesRosa/icarus`**. O repositório contém as instruções do agente, a base de conhecimento e a memória persistente de treino.
 
-Esse desenho segue a descoberta oficial do Codex: instruções de projeto vêm de `AGENTS.md`, enquanto skills locais do repositório ficam em `.agents/skills` e usam divulgação progressiva. Veja a documentação oficial sobre [AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md) e [skills](https://learn.chatgpt.com/docs/build-skills).
+## Como funciona
 
-## Como usar
+Ao iniciar uma conversa no Projeto Icarus, o agente consulta:
 
-Abra `/Users/guilherme.mendesrosa/code/icarus` como projeto e inicie uma nova tarefa. Você pode pedir naturalmente:
+- `AGENTS.md` para identidade, comportamento e invariantes;
+- `knowledge/INDEX.md` para roteamento;
+- `.agents/skills/` para o fluxo aplicável;
+- `training/data/` para perfil, programa ativo e histórico persistente.
 
-- “Icarus, monte um treino para 4 dias, 60 minutos, com prioridade em costas.”
-- “Audite meu treino e descubra por que parei de progredir no supino.”
-- “O que o corpus diz sobre volume para naturais e o que a ciência atual diz?”
-- “Tenho só 35 minutos por sessão; adapte esta divisão.”
-- “Integre estas novas transcrições à base.”
-- “Icarus, qual é o treino de hoje?”
-- “Registra: supino, 80 kg, 8 repetições, 2 RIR.”
-- “Como evoluí nos últimos cinco treinos de costas?”
-
-Também é possível invocar uma skill explicitamente com `$icarus-coaching`, `$icarus-evidence` ou `$icarus-corpus`.
+O objetivo é que o ChatGPT aja como uma interface do agente definido no repositório, em vez de manter uma cópia separada das regras.
 
 ## Estrutura
 
 ```text
 AGENTS.md                 identidade, comportamento e invariantes
 knowledge/                sínteses, evidência, segurança e roteamento
-icaro/                    transcrições originais e um artefato derivado
-training/                 perfil, programa ativo, logs e métricas
+icaro/                    transcrições originais e artefatos derivados
+training/
+  SCHEMA.md               contrato dos dados
+  README.md               arquitetura da memória
+  data/                   perfil, programa e logs persistentes privados
 .agents/skills/
   icarus-coaching/        criação, acompanhamento ao vivo e evolução
   icarus-evidence/        perguntas conceituais e checagem científica
   icarus-corpus/          ingestão e manutenção das transcrições
+exports/chatgpt/
+  PROJECT_INSTRUCTIONS.md bootstrap para o Projeto do ChatGPT
 ```
 
-## Validação
+## Configuração recomendada no ChatGPT
 
-Da raiz do projeto:
+1. Crie um Projeto chamado **Icarus — Treino**.
+2. Conecte o GitHub com acesso ao repositório privado `GuilhermeMendesRosa/icarus`.
+3. Copie o bloco de `exports/chatgpt/PROJECT_INSTRUCTIONS.md` para as instruções do Projeto.
+4. Inicie um chat com algo como `Icarus, qual é meu treino hoje?`.
+
+As instruções do Projeto são apenas um bootstrap. O comportamento real deve ser carregado da versão atual do repositório.
+
+## Treino ao vivo no ChatGPT
+
+O backend oficial está em:
+
+`.agents/skills/icarus-coaching/references/github-memory.md`
+
+Com GitHub conectado para leitura e escrita, o Icarus consegue:
+
+- recuperar o treino atual;
+- iniciar sessão;
+- registrar cada série;
+- corrigir série sem apagar o evento anterior;
+- finalizar ou cancelar treino;
+- comparar exposições equivalentes;
+- acompanhar tendência e progressão entre conversas.
+
+Cada gravação só é confirmada depois do sucesso da escrita no GitHub.
+
+## Memória persistente
+
+A memória canônica fica em `training/data/`:
+
+- `profile.json`;
+- `active_program.json`;
+- `logs/YYYY/MM/*.jsonl`.
+
+Esses dados são versionados intencionalmente porque este repositório é privado e o proprietário autorizou o uso como backend pessoal do Icarus. Não torne o repositório público sem antes remover os dados e considerar o histórico Git.
+
+## Compatibilidade local
+
+`.agents/skills/icarus-coaching/scripts/icarus_tracker.py` permanece no projeto como implementação de referência e pode continuar sendo executado localmente. O formato de dados é o mesmo usado pelo ChatGPT, então um histórico local anterior pode ser sincronizado sem conversão.
+
+Exemplo de validação local, se desejado:
 
 ```bash
-python3 .agents/skills/icarus-corpus/scripts/audit_catalog.py
-python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/icarus-coaching
-python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/icarus-evidence
-python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/icarus-corpus
+python3 .agents/skills/icarus-coaching/scripts/icarus_tracker.py validate
 ```
 
-O Codex detecta alterações de skills automaticamente; se uma alteração não aparecer no seletor, reinicie a sessão.
+## Exemplos de uso
 
-## Treino pelo celular
+- “Icarus, qual é o treino de hoje?”
+- “Começa o treino.”
+- “Supino: 80 kg, 8 reps, 2 RIR.”
+- “Corrige a última: eram 82,5 kg.”
+- “Terminei. RPE 8, 60 minutos.”
+- “Como evoluí no supino?”
+- “Audite meu treino e descubra o principal gargalo.”
+- “O que o corpus diz sobre volume para naturais e o que a ciência atual diz?”
 
-O fluxo recomendado é o Codex Remote no ChatGPT mobile conectado ao computador onde este projeto está salvo. O trabalho é executado nesse computador, então o diário local continua disponível entre tarefas no mesmo projeto. Mantenha o computador acordado e online. Veja [training/README.md](training/README.md) e a documentação oficial do [Codex Remote](https://learn.chatgpt.com/docs/remote).
-
-### Projeto comum do ChatGPT (sem computador)
-
-Se a prioridade é usar o Icarus pelo celular sem depender do computador, use a versão portátil em um Projeto comum do ChatGPT. Ela mantém a conversa, a base de coaching e resumos salvos no próprio Projeto, mas **não** inclui o diário local validado pelo tracker. Projetos sincronizam chats, arquivos e instruções entre dispositivos; veja a documentação oficial de [Projetos no ChatGPT](https://help.openai.com/pt-br/articles/10169521-projetos-no-chatgpt).
-
-1. No ChatGPT, crie o projeto **Icarus — Treino**.
-2. Abra [`exports/chatgpt/PROJECT_INSTRUCTIONS.md`](exports/chatgpt/PROJECT_INSTRUCTIONS.md), copie o bloco e cole em **Configurações do projeto → Instruções do projeto**.
-3. Envie apenas [`exports/chatgpt/ICARUS_CONTEXT.md`](exports/chatgpt/ICARUS_CONTEXT.md) como arquivo de referência.
-4. No primeiro chat, envie: `Icarus, quero fazer meu onboarding como parceiro de treino.`
-5. Mantenha um chat contínuo para o diário. Ao final de cada sessão, peça o **Resumo para salvar** e salve a resposta como fonte do Projeto.
-
-Não envie `training/data/`, que contém dados pessoais locais. Essa versão começa o histórico do zero e não deve declarar evolução com base em memória conversacional não confirmada. Para comparações confiáveis de carga e histórico append-only, continue usando o fluxo local do Codex.
-
-Chats em ambiente cloud clonam o repositório e apresentam alterações como diff; por isso, não use cloud como diário principal sem integrar cada mudança de volta. Os detalhes estão na documentação oficial de [cloud environments](https://learn.chatgpt.com/docs/environments/cloud-environment).
-
-Os dados pessoais em `training/data/` são ignorados pelo Git por padrão. Para começar:
-
-> Icarus, quero fazer meu onboarding como parceiro de treino.
+Também é possível invocar explicitamente `$icarus-coaching`, `$icarus-evidence` ou `$icarus-corpus` quando o ambiente oferecer esse mecanismo.

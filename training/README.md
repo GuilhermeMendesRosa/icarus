@@ -7,29 +7,40 @@ Esta pasta transforma o Icarus em um parceiro de treino persistente. O programa 
 ```text
 training/
   templates/                    modelos versionados
-  data/                         dados pessoais locais, ignorados pelo Git
+  data/                         dados pessoais persistidos no repo privado
     profile.json                perfil, disponibilidade e objetivos
     active_program.json         rotação e sessões ativas
-    logs/YYYY/MM/*.jsonl        eventos de cada treino
-    reports/                    relatórios gerados
+    logs/YYYY/MM/*.jsonl        eventos append-only de cada treino
+    reports/                    relatórios gerados, quando usados
   SCHEMA.md                     contrato dos dados
 .agents/skills/icarus-coaching/
-  scripts/icarus_tracker.py     CLI usada pelo agente
+  references/github-memory.md   backend oficial no ChatGPT
+  scripts/icarus_tracker.py     implementação local/de referência
 ```
 
-Os logs são append-only. Um treino finalizado não deve ser reescrito; correções entram como novos eventos em versões futuras do esquema. `exercise_id` identifica uma combinação estável de exercício, máquina/implemento e forma de contabilizar a carga.
+Os logs são append-only. Um treino finalizado não deve ser reescrito; correções entram como novos eventos `set_corrected`. `exercise_id` identifica uma combinação estável de exercício, máquina/implemento e forma de contabilizar a carga.
+
+## Fonte canônica
+
+O uso principal agora é pelo **ChatGPT conectado ao repositório privado `GuilhermeMendesRosa/icarus`**. A branch `main` é a fonte persistente canônica.
+
+O proprietário autorizou explicitamente o versionamento de `training/data/` neste repositório privado para permitir continuidade entre conversas e dispositivos. Não torne o repositório público sem antes remover os dados pessoais e considerar a reescrita do histórico Git.
+
+O ChatGPT deve usar `.agents/skills/icarus-coaching/references/github-memory.md` para ler e gravar o estado diretamente no GitHub. O `icarus_tracker.py` permanece útil como implementação de referência e para compatibilidade local, mas não é necessário para operar o Icarus no ChatGPT.
 
 ## Primeiro uso
 
-Peça ao agente:
+Se `training/data/profile.json` e `training/data/active_program.json` ainda não existirem, peça:
 
 > Icarus, quero fazer meu onboarding como parceiro de treino.
 
-Ele deve coletar os dados mínimos, preencher `training/data/profile.json`, criar `training/data/active_program.json`, validar e só então ativar o programa. Os arquivos são criados automaticamente a partir dos templates se estiverem ausentes.
+O agente deve coletar os dados mínimos, criar os dois arquivos no GitHub, validar logicamente o schema e só então ativar o programa.
+
+Se já existe histórico local anterior, sincronize-o para `training/data/` preservando exatamente os arquivos atuais. O formato local e o remoto é o mesmo; não há migração de schema.
 
 ## Uso na academia
 
-No Codex Remote do celular, usando o mesmo computador e projeto:
+No Projeto Icarus do ChatGPT:
 
 1. “Icarus, qual é o treino de hoje?”
 2. “Começa o treino. Prontidão 8, dormi 7 horas.”
@@ -37,25 +48,31 @@ No Codex Remote do celular, usando o mesmo computador e projeto:
 4. “Segunda: 80 por 7, 1 RIR.”
 5. “Terminei. RPE da sessão 8, 64 minutos.”
 
-O agente confirma cada gravação e compara apenas com exposições compatíveis.
+Cada série inequívoca é persistida imediatamente no GitHub. A confirmação ao usuário só vem depois do sucesso da escrita.
 
-## Comandos operacionais
+## Operações canônicas
 
-```bash
-python3 .agents/skills/icarus-coaching/scripts/icarus_tracker.py init
-python3 .agents/skills/icarus-coaching/scripts/icarus_tracker.py today
-python3 .agents/skills/icarus-coaching/scripts/icarus_tracker.py start --readiness 8 --sleep-hours 7
-python3 .agents/skills/icarus-coaching/scripts/icarus_tracker.py log-set --exercise supino-reto --weight 80 --reps 8 --rir 2
-python3 .agents/skills/icarus-coaching/scripts/icarus_tracker.py correct-last-set --weight 82.5 --reason "carga ditada errada"
-python3 .agents/skills/icarus-coaching/scripts/icarus_tracker.py finish --session-rpe 8 --duration-minutes 64
-python3 .agents/skills/icarus-coaching/scripts/icarus_tracker.py progress
-python3 .agents/skills/icarus-coaching/scripts/icarus_tracker.py validate
-```
+A semântica continua sendo:
 
-O usuário não precisa digitar comandos. A skill traduz linguagem natural e executa a operação correta.
+- `today`: sessão atual/próxima e histórico relevante;
+- `start`: cria `session_started`;
+- `log-set`: acrescenta `set_logged`;
+- `correct-last-set`: acrescenta `set_corrected`, sem apagar o original;
+- `finish`: acrescenta `session_completed`;
+- `cancel`: acrescenta `session_cancelled` sem avançar rotação;
+- `progress`: calcula evolução apenas entre exposições comparáveis;
+- `validate`: verifica integridade de perfil, programa e eventos.
 
-## Remote, nuvem e persistência
+No ChatGPT essas operações são executadas diretamente pelo backend GitHub. Localmente, os comandos equivalentes continuam disponíveis em `icarus_tracker.py`.
 
-O fluxo principal pressupõe Codex Remote conectado ao computador onde este projeto está salvo. Se usar um chat em ambiente cloud, o repositório é clonado em um container e as gravações aparecem como mudanças da tarefa; elas não chegam automaticamente ao diário local até que o diff seja aplicado ou integrado.
+## Concorrência e segurança de escrita
 
-Os dados pessoais ficam ignorados pelo Git por padrão. Para backup ou uso em mais de um computador, escolha conscientemente uma solução privada e segura. Não publique `training/data/` em repositório público.
+Antes de atualizar um JSONL existente, o agente deve reler o arquivo e usar o SHA atual retornado pelo GitHub. Em conflito, deve reler e reconciliar, nunca sobrescrever linhas persistidas.
+
+Treino finalizado é imutável. Uma sessão cancelada não avança a rotação.
+
+## Privacidade
+
+`training/data/` pode conter perfil, peso, desempenho, RIR, dor e notas pessoais. Esses dados estão versionados **somente porque o repositório é privado e o proprietário autorizou este uso**.
+
+Não publique esses arquivos, não os copie para repositório público e não os mova para outro serviço sem pedido explícito.
