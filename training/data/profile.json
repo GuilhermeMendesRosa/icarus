@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "onboarding_complete": false,
+  "athlete": {
+    "preferred_name": null,
+    "timezone": "America/Sao_Paulo",
+    "default_unit": "kg",
+    "bodyweight_kg": null
+  },
+  "goals": {
+    "primary": "hipertrofia geral (provisório)",
+    "priority_muscles": [],
+    "secondary": [],
+    "horizon_weeks": 8
+  },
+  "availability": {
+    "days_per_week": 4,
+    "minutes_per_session": 60,
+    "preferred_days": []
+  },
+  "experience": {
+    "level": null,
+    "years": null,
+    "notes": "Pendente confirmação do nível de treino."
+  },
+  "constraints": {
+    "equipment": [],
+    "avoid_exercises": [],
+    "pain_or_restrictions": [],
+    "notes": "Pendente confirmação de equipamentos e dores/restrições."
+  },
+  "recovery_baseline": {
+    "sleep_hours": null,
+    "stress_1_to_10": null,
+    "notes": null
+  }
+}
