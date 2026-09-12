@@ -2,8 +2,8 @@
   "schema_version": 1,
   "program_id": "upper-focus-4x-2026-09",
   "name": "Upper Focus 4x - 60 min",
-  "status": "draft",
-  "started_on": null,
+  "status": "active",
+  "started_on": "2026-09-12",
   "rotation": ["A", "B", "C", "D"],
   "sessions": {
     "A": {
@@ -60,5 +60,5 @@
     "after_completed_sessions": 8,
     "notes": "Revisar apos duas rotacoes completas. Priorizar progresso com tecnica e RIR estaveis; nao aumentar volume por uma unica sessao ruim."
   },
-  "notes": "Rascunho individual baseado nos dados confirmados: 4x/semana, cerca de 60 min, foco em superiores, sem agachamento, stiff, terra ou exercicios cujo objetivo principal seja gluteo. Assume provisoriamente acesso a academia comercial. Ativar apenas apos confirmar equipamento disponivel, nivel de experiencia e ausencia/presenca de dor ou restricao relevante."
+  "notes": "Programa ativo: 4x/semana, cerca de 60 min, foco em superiores, sem agachamento, stiff, terra ou exercicios cujo objetivo principal seja gluteo. Usuario treina ha cerca de 4 anos e relatou ausencia de dor ou restricao relevante ao iniciar. Ajustes de equipamento podem ser feitos mantendo IDs distintos quando a comparabilidade mudar."
 }
