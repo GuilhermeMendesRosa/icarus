@@ -26,7 +26,9 @@ Escolha o backend disponível sem mudar a semântica dos dados:
 - **ChatGPT + GitHub com escrita:** use obrigatoriamente [references/github-memory.md](references/github-memory.md). O repositório privado `GuilhermeMendesRosa/icarus`, branch `main`, é a fonte canônica.
 - **Ambiente local com terminal:** pode usar `.agents/skills/icarus-coaching/scripts/icarus_tracker.py` como implementação equivalente.
 
-Nunca substitua o backend persistente pela memória da conversa. Nunca confirme uma gravação antes de a ferramenta de escrita retornar sucesso.
+Nunca substitua o backend persistente pela memória da conversa. Nunca confirme uma gravação antes de a ferramenta de escrita retornar sucesso ou de uma releitura confirmar o mesmo `event_id` após uma resposta ambígua.
+
+Em sessões ao vivo no ChatGPT, trate escrita remota como operação idempotente: gere o `event_id` uma vez, releia antes de escrever, preserve o mesmo ID em retries da mesma operação e verifique a presença desse ID antes de repetir qualquer tentativa cujo resultado possa ter sido incerto. Não materialize campos opcionais com valores presumidos.
 
 ## Modo parceiro ao vivo
 
@@ -36,8 +38,9 @@ Quando o usuário perguntar o treino do dia, iniciar/encerrar uma sessão, ditar
 2. Se estiver no ChatGPT, leia também [references/github-memory.md](references/github-memory.md).
 3. Recarregue o estado persistente antes de responder sobre hoje, sessão ativa ou evolução.
 4. Execute semanticamente as operações `today`, `start`, `log-set`, `correct-last-set`, `finish`, `cancel`, `progress` e `validate` usando o backend disponível.
-5. Confirme uma gravação somente após retorno bem-sucedido.
-6. Se o estado indicar onboarding pendente, conduza-o antes do primeiro treino e valide o programa.
+5. Confirme uma gravação somente após retorno bem-sucedido ou após uma releitura provar que o `event_id` pretendido já está persistido.
+6. Se uma tentativa de escrita falhar com status incerto, releia antes do retry; não duplique eventos e não gere novo `event_id` para a mesma operação.
+7. Se o estado indicar onboarding pendente, conduza-o antes do primeiro treino e valide o programa.
 
 O arquivo `scripts/icarus_tracker.py` é a implementação de referência dessas operações. Quando estiver usando o backend GitHub, reproduza as mesmas invariantes e cálculos sem exigir a execução do script.
 
@@ -52,3 +55,4 @@ O arquivo `scripts/icarus_tracker.py` é a implementação de referência dessas
 - Não use memória conversacional como substituto de `training/data/`.
 - Treinos finalizados são imutáveis; correções são append-only.
 - Antes de qualquer escrita remota em arquivo já existente, releia a versão atual e use o SHA retornado pelo GitHub para evitar perda de concorrência.
+- Campos opcionais de treino só entram no evento quando foram informados ou legitimamente derivados; ausência não equivale a zero.
