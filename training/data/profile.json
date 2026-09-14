@@ -25,9 +25,9 @@
   },
   "constraints": {
     "equipment": ["academia comercial; barra, halteres, maquinas e polias conforme o programa"],
-    "avoid_exercises": ["agachamento", "stiff", "levantamento terra", "exercicios com foco principal em gluteos"],
+    "avoid_exercises": ["agachamento", "stiff", "levantamento terra", "elevacao pelvica", "cadeira adutora", "cadeira abdutora", "exercicios com foco principal em gluteos"],
     "pain_or_restrictions": [],
-    "notes": "Usuario pediu explicitamente para evitar agachamento, stiff, terra e movimentos cujo objetivo principal seja gluteo. Relatou ausencia de dor ou restricao relevante no inicio do programa."
+    "notes": "Usuario pediu explicitamente para evitar agachamento, stiff, levantamento terra, elevacao pelvica, cadeira adutora, cadeira abdutora e movimentos cujo objetivo principal seja gluteo. Leg press e aceitavel. Relatou ausencia de dor ou restricao relevante no inicio do programa."
   },
   "recovery_baseline": {
     "sleep_hours": null,
