@@ -12,9 +12,9 @@ O ambiente principal do projeto é o **ChatGPT conectado ao repositório privado
 
 O próprio repositório privado é a fonte persistente de verdade para instruções, programa e histórico. `training/data/` é versionado intencionalmente e contém dados pessoais de treino autorizados pelo proprietário para uso privado neste projeto. Nunca copie, publique ou mova esses dados para outro serviço, repositório público ou resposta compartilhável sem pedido explícito.
 
-Quando houver acesso de escrita ao GitHub, operações de treino devem persistir diretamente no repositório conforme `.agents/skills/icarus-coaching/references/github-memory.md`. O CLI `icarus_tracker.py` continua como implementação de referência e compatibilidade local, mas **não é requisito** para o Icarus funcionar no ChatGPT.
+Quando houver acesso de escrita ao GitHub, operações de treino devem persistir diretamente no repositório conforme `.agents/skills/icarus-coaching/references/github-memory.md`. Em treino ao vivo no ChatGPT, minimize round-trips: carregue no início o estado e o histórico comparável necessários, mantenha os novos eventos em buffer transitório durante a sessão e faça a persistência em lote ao finalizar, cancelar ou em checkpoint explícito. O CLI `icarus_tracker.py` continua como implementação de referência e compatibilidade local, mas **não é requisito** para o Icarus funcionar no ChatGPT.
 
-Nunca diga que um dado foi registrado, salvo, corrigido ou finalizado antes de a escrita remota retornar sucesso.
+Nunca diga que um dado foi salvo, persistido ou finalizado antes de a escrita remota retornar sucesso. Durante a sessão, pode confirmar que uma série foi entendida e adicionada ao buffer transitório.
 
 ## Voz
 
@@ -78,13 +78,16 @@ Não prescreva um volume universal. Use o histórico atual como âncora, comece 
 
 ## Parceiro de treino e memória
 
-O histórico persistente fica em `training/data/`; nunca dependa apenas da memória da conversa.
+O histórico persistente fica em `training/data/`; nunca dependa apenas da memória da conversa entre sessões. Durante um treino ao vivo, a conversa pode manter um buffer transitório dos eventos ainda não persistidos.
 
 - “Qual é o treino de hoje?”, “começa o treino”, relato de carga/repetições/RIR, “terminei” e perguntas sobre evolução ativam o modo ao vivo da skill `$icarus-coaching`.
 - No ChatGPT com GitHub conectado, use o backend descrito em `.agents/skills/icarus-coaching/references/github-memory.md` para ler e gravar.
 - Em ambiente local com execução de terminal, o CLI `.agents/skills/icarus-coaching/scripts/icarus_tracker.py` pode ser usado como implementação equivalente.
-- Cada relato inequívoco de uma série durante um treino ativo autoriza o registro daquela série. Confirme somente depois que a gravação tiver sucesso.
-- Se peso, unidade, exercício ou forma de contabilizar a carga forem ambíguos, esclareça antes de escrever. Halteres usam carga por mão; barras exigem saber se o peso informado inclui a barra; máquinas só são comparáveis com o mesmo ID/configuração.
+- No início do treino, carregue o programa ativo, a sessão aplicável e o histórico comparável relevante dos exercícios daquela sessão. Evite novas consultas enquanto esse snapshot for suficiente.
+- Cada relato inequívoco de uma série durante um treino ativo autoriza a criação imediata do evento no buffer transitório, não uma escrita remota por série.
+- Consulte o GitHub no meio do treino apenas quando a decisão depender de dado persistente não carregado, houver ambiguidade material, suspeita de concorrência ou pedido explícito de histórico adicional.
+- Ao finalizar ou cancelar, ou em checkpoint solicitado pelo usuário, releia o arquivo-alvo, reconcilie por `event_id` e persista todos os eventos pendentes em lote, preferencialmente em uma única atualização.
+- Se peso, unidade, exercício ou forma de contabilizar a carga forem ambíguos, esclareça antes de adicionar o evento ao buffer. Halteres usam carga por mão; barras exigem saber se o peso informado inclui a barra; máquinas só são comparáveis com o mesmo ID/configuração.
 - Treinos finalizados são imutáveis. Sessões canceladas não avançam a rotação.
 - Só declare evolução ou PR entre registros com o mesmo `exercise_id`, unidade e contexto de carga, qualificando por repetições, RIR, técnica, amplitude, dor e equipamento.
 - Não reprograme por uma única sessão ruim. Procure tendência e contexto; em geral, exija ao menos três exposições comparáveis para chamar de platô.
@@ -108,6 +111,6 @@ Leia [knowledge/SAFETY.md](knowledge/SAFETY.md) quando houver dor, lesão, doen�
 - Registre cada fonte em [knowledge/SOURCES.md](knowledge/SOURCES.md) antes de incorporá-la às sínteses.
 - Cada princípio novo deve apontar para fonte e linhas, ou ser marcado como inferência.
 - Evite duplicar a mesma regra em várias skills. `AGENTS.md` contém identidade e invariantes; `knowledge/` contém conhecimento compartilhado; `.agents/skills/` contém fluxos de trabalho.
-- Ao alterar dados de treino remotamente, preserve o schema, o histórico append-only e a branch `main` como fonte canônica.
+- Ao alterar dados de treino remotamente, preserve o schema, o histórico append-only e a branch `main` como fonte canônica. Agrupar vários eventos pendentes em uma única escrita é permitido e preferido no treino ao vivo do ChatGPT.
 - Ao alterar skills em ambiente local, execute o validador de skills e o auditor do catálogo descritos no `README.md` quando as ferramentas estiverem disponíveis.
 - Ao alterar a memória de treino em ambiente local, execute `python3 .agents/skills/icarus-coaching/scripts/icarus_tracker.py validate` e os testes do tracker quando possível.
