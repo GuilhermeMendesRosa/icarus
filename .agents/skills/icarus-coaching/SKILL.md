@@ -44,6 +44,16 @@ Quando o usuário perguntar o treino do dia, iniciar/encerrar uma sessão, ditar
 8. Se uma tentativa de flush tiver status incerto, releia antes do retry; não duplique eventos e preserve os mesmos `event_id` da operação pendente.
 9. Se o estado indicar onboarding pendente, conduza-o antes do primeiro treino e valide o programa.
 
+### Contrato de interação no chat
+
+O protocolo de [references/live-workout.md](references/live-workout.md) é obrigatório para a experiência do treino ao vivo. Em particular:
+
+- ao começar, mostre o treino completo com séries de trabalho, reps, RIR e descanso de cada exercício;
+- depois de cada série, mostre a posição `N/total`, quantas séries faltam e o descanso prescrito;
+- ao terminar um exercício, apresente automaticamente o próximo com seus alvos;
+- mantenha motivação curta, contextual e útil, sem esconder a instrução prática;
+- durante sessão ativa, quando exercício, unidade e contexto de carga estiverem inequívocos, interprete três números isolados como `<carga> <repetições> <RIR>`; por exemplo, `40 10 4` significa 40 kg, 10 reps e RIR 4, respeitando `per_hand` em halteres e a convenção já estabelecida para barras.
+
 O arquivo `scripts/icarus_tracker.py` é a implementação de referência das invariantes, cálculos e formato dos eventos. O backend ChatGPT pode agrupar vários eventos em uma única escrita sem alterar o contrato do JSONL.
 
 ## Regras
