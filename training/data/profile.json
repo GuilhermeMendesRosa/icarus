@@ -9,23 +9,41 @@
   },
   "goals": {
     "primary": "hipertrofia com prioridade para membros superiores",
-    "priority_muscles": ["peito", "costas", "deltoides", "biceps", "triceps"],
-    "secondary": ["manter e desenvolver membros inferiores com volume enxuto"],
+    "priority_muscles": [
+      "peito",
+      "costas",
+      "deltoides",
+      "biceps",
+      "triceps"
+    ],
+    "secondary": [
+      "manter e desenvolver membros inferiores com volume enxuto"
+    ],
     "horizon_weeks": 8
   },
   "availability": {
-    "days_per_week": 4,
-    "minutes_per_session": 60,
+    "days_per_week": 3,
+    "minutes_per_session": 90,
     "preferred_days": []
   },
   "experience": {
     "level": "intermediario",
     "years": 4,
-    "notes": "Treina ha cerca de 4 anos."
+    "notes": "Treina ha cerca de 4 anos. Programa reorganizado para 3 sessoes por semana de ate 90 min em 2026-09-30."
   },
   "constraints": {
-    "equipment": ["academia comercial; barra, halteres, maquinas e polias conforme o programa"],
-    "avoid_exercises": ["agachamento", "stiff", "levantamento terra", "elevacao pelvica", "cadeira adutora", "cadeira abdutora", "exercicios com foco principal em gluteos"],
+    "equipment": [
+      "academia comercial; barra, halteres, maquinas e polias conforme o programa"
+    ],
+    "avoid_exercises": [
+      "agachamento",
+      "stiff",
+      "levantamento terra",
+      "elevacao pelvica",
+      "cadeira adutora",
+      "cadeira abdutora",
+      "exercicios com foco principal em gluteos"
+    ],
     "pain_or_restrictions": [],
     "notes": "Usuario pediu explicitamente para evitar agachamento, stiff, levantamento terra, elevacao pelvica, cadeira adutora, cadeira abdutora e movimentos cujo objetivo principal seja gluteo. Leg press e aceitavel. Relatou ausencia de dor ou restricao relevante no inicio do programa."
   },
