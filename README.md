@@ -2,18 +2,18 @@
 
 Icarus é um agente de coaching de treino resistido baseado em ciência, com foco em praticantes naturais e personalidade inspirada no conteúdo educacional de Ícaro Lermen.
 
-O uso principal é pelo **ChatGPT conectado ao repositório privado `GuilhermeMendesRosa/icarus`**. O repositório contém as instruções do agente, a base de conhecimento e a memória persistente de treino.
+O uso principal é por um **Projeto do Claude** (web, desktop ou celular). O repositório privado `GuilhermeMendesRosa/icarus` entra como conhecimento sincronizado do GitHub, com as instruções do agente e a base de conhecimento. A memória persistente de treino fica no **Notion** (`Segundo Cérebro → Icarus`).
 
 ## Como funciona
 
-Ao iniciar uma conversa no Projeto Icarus, o agente consulta:
+Ao iniciar uma conversa no Projeto Icarus, o agente consulta no conhecimento sincronizado:
 
 - `AGENTS.md` para identidade, comportamento e invariantes;
 - `knowledge/INDEX.md` para roteamento;
 - `.agents/skills/` para o fluxo aplicável;
-- `training/data/` para perfil, programa ativo e histórico persistente.
+- o Notion, via `.agents/skills/icarus-coaching/references/notion-memory.md`, para perfil, programa ativo e histórico persistente.
 
-O objetivo é que o ChatGPT aja como uma interface do agente definido no repositório, em vez de manter uma cópia separada das regras.
+O objetivo é que o chat aja como interface do agente definido no repositório, em vez de manter uma cópia separada das regras.
 
 ## Estrutura
 
@@ -24,16 +24,24 @@ icaro/                    transcrições originais e artefatos derivados
 training/
   SCHEMA.md               contrato dos dados
   README.md               arquitetura da memória
-  data/                   perfil, programa e logs persistentes privados
+  data/                   arquivo histórico (congelado em 2026-10-06; estado atual no Notion)
 .agents/skills/
   icarus-coaching/        criação, acompanhamento ao vivo e evolução
   icarus-evidence/        perguntas conceituais e checagem científica
   icarus-corpus/          ingestão e manutenção das transcrições
+exports/claude/
+  PROJECT_INSTRUCTIONS.md setup e bootstrap do Projeto do Claude
 exports/chatgpt/
-  PROJECT_INSTRUCTIONS.md bootstrap para o Projeto do ChatGPT
+  PROJECT_INSTRUCTIONS.md bootstrap do Projeto do ChatGPT (legado)
 ```
 
-## Configuração recomendada no ChatGPT
+## Configuração recomendada no Claude
+
+Siga `exports/claude/PROJECT_INSTRUCTIONS.md`. Em resumo: crie o Projeto **Icarus — Treino**, adicione este repositório como conhecimento via GitHub (sem `training/data/`), ligue o conector do Notion e cole o bloco de instruções. Depois de mudar regras no repo, faça push e sincronize o conhecimento do Projeto.
+
+O backend de memória está em `.agents/skills/icarus-coaching/references/notion-memory.md`: bancos **Sessões**, **Séries**, **Prescrição** e **Exercícios**, mais as páginas **Perfil** e **Programa ativo**. Dá para acompanhar tudo também pelo app do Notion.
+
+## Configuração no ChatGPT (legado)
 
 1. Crie um Projeto chamado **Icarus — Treino**.
 2. Conecte o GitHub com acesso ao repositório privado `GuilhermeMendesRosa/icarus`.
@@ -62,7 +70,7 @@ Cada gravação só é confirmada depois do sucesso da escrita no GitHub.
 
 ## Memória persistente
 
-A memória canônica fica em `training/data/`:
+Desde 2026-10-06, a memória canônica fica no Notion (ver acima). No fluxo legado do ChatGPT, ela ficava em `training/data/`:
 
 - `profile.json`;
 - `active_program.json`;

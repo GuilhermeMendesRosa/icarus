@@ -12,7 +12,7 @@ Use este fluxo quando o usuário estiver na academia, perguntar pelo treino do d
 - Nunca invente peso, repetição, RIR, data ou sessão ausente.
 - Treinos finalizados são imutáveis; correções são novos eventos append-only.
 - Não avance a rotação em sessão cancelada.
-- No ChatGPT, use `github-memory.md`; em ambiente local, o tracker pode ser usado.
+- No Claude, use `notion-memory.md`; no ChatGPT (legado), `github-memory.md`; em ambiente local, o tracker pode ser usado.
 
 ## Experiência no chat durante o treino
 

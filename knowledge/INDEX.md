@@ -7,7 +7,7 @@ Use apenas os arquivos necessários para a pergunta atual.
 | Tom, personalidade ou conteúdo em voz do Icarus | `PERSONA.md` | exemplos no catálogo, se necessário |
 | Princípios gerais do método | `PRINCIPLES.md` | transcrições citadas |
 | Montar ou adaptar um treino | `PROGRAM_DESIGN.md` | `PRINCIPLES.md` e `EXERCISE_SELECTION.md` |
-| Treino do dia, registro ao vivo ou evolução | skill `$icarus-coaching` | `training/SCHEMA.md`, `references/live-workout.md`, `references/github-memory.md` e `training/data/` |
+| Treino do dia, registro ao vivo ou evolução | skill `$icarus-coaching` | `training/SCHEMA.md`, `references/live-workout.md` e o backend ativo (`references/notion-memory.md` no Claude; `references/github-memory.md` + `training/data/` no ChatGPT) |
 | Escolher/substituir exercícios | `EXERCISE_SELECTION.md` | fontes por grupamento em `SOURCES.md` |
 | Responder com ciência ou checar uma afirmação | `EVIDENCE.md` | fonte externa atual e transcrição relevante |
 | Dor, doença, retorno ou população especial | `SAFETY.md` | fontes profissionais atuais |

@@ -23,7 +23,8 @@ Entregue uma decisão executável, individualizada e rastreável. Preserve a ide
 
 Escolha o backend disponível sem mudar a semântica dos dados:
 
-- **ChatGPT + GitHub com escrita:** use obrigatoriamente [references/github-memory.md](references/github-memory.md). O repositório privado `GuilhermeMendesRosa/icarus`, branch `main`, é a fonte canônica.
+- **Projeto do Claude + Notion:** use obrigatoriamente [references/notion-memory.md](references/notion-memory.md). Desde 2026-10-06, o Notion (`Segundo Cérebro → Icarus`) é a fonte canônica dos dados; `training/data/` é arquivo histórico.
+- **ChatGPT + GitHub com escrita (legado):** use [references/github-memory.md](references/github-memory.md).
 - **Ambiente local com terminal:** pode usar `.agents/skills/icarus-coaching/scripts/icarus_tracker.py` como implementação equivalente.
 
 No ChatGPT, priorize baixa latência durante o treino: carregue no início o programa, a sessão aplicável e o histórico comparável necessário; depois mantenha os novos eventos apenas no buffer transitório. Não releia nem grave o GitHub a cada série. Consulte novamente o repositório no meio da sessão somente quando faltar contexto persistente relevante, houver ambiguidade que dependa do histórico, o usuário pedir uma comparação específica ou for necessário reconciliar concorrência.
@@ -35,7 +36,7 @@ A persistência normal acontece em lote no encerramento, cancelamento ou quando 
 Quando o usuário perguntar o treino do dia, iniciar/encerrar uma sessão, ditar uma série ou pedir evolução:
 
 1. Leia [references/live-workout.md](references/live-workout.md).
-2. Se estiver no ChatGPT, leia também [references/github-memory.md](references/github-memory.md).
+2. Leia também o backend ativo: [references/notion-memory.md](references/notion-memory.md) no Claude; [references/github-memory.md](references/github-memory.md) no ChatGPT.
 3. No início da interação relevante, carregue o estado persistente necessário para determinar treino atual, sessão ativa, metas e histórico comparável.
 4. Execute semanticamente as operações `today`, `start`, `log-set`, `correct-last-set`, `finish`, `cancel`, `progress` e `validate` usando o backend disponível, distinguindo evento **bufferizado** de evento **persistido**.
 5. Durante a sessão, acumule `session_started`, `set_logged` e `set_corrected` no buffer transitório sem round-trip ao GitHub por série.
