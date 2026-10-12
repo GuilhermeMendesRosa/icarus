@@ -60,6 +60,7 @@ git push -u origin main
 
 - Edite `training/data/profile.json` e `training/data/active_program.json` preservando o schema.
 - Novo programa: novo `program_id`; mantenha os `exercise_id` de variantes equivalentes para preservar comparabilidade. Logs antigos não são alterados.
+- Para recomeçar a rotação do primeiro treino sem trocar de programa, defina `cycle_started_on` (data de hoje) em `active_program.json`; o histórico continua comparável.
 - Rode `validate` e os testes, e faça commit + push (`training: <descrição>`) antes de declarar o programa ativo.
 
 ## Privacidade

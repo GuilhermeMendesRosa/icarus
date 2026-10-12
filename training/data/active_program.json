@@ -4,6 +4,7 @@
   "name": "Upper Focus 3x - ate 90 min",
   "status": "active",
   "started_on": "2026-09-30",
+  "cycle_started_on": "2026-10-12",
   "rotation": [
     "A",
     "B",
@@ -551,7 +552,7 @@
   },
   "review": {
     "after_completed_sessions": 6,
-    "notes": "Revisar apos duas rotacoes completas do programa 3x. Priorizar progresso com tecnica e RIR estaveis; nao aumentar volume por uma unica sessao ruim. Teto pratico de duracao: 90 min por sessao."
+    "notes": "Revisar apos duas rotacoes completas do programa 3x. Priorizar progresso com tecnica e RIR estaveis; nao aumentar volume por uma unica sessao ruim. Teto pratico de duracao: 90 min por sessao. Ciclo reiniciado em 2026-10-12 a partir do treino A: contar as 6 sessoes da revisao a partir dessa data."
   },
-  "notes": "Programa ativo reorganizado de 4x para 3x por semana em 2026-09-30, com teto de 90 min e prioridade para superiores. Mantem os exercise_id das variantes equivalentes para que os logs do programa anterior upper-focus-4x-2026-09 continuem comparaveis. Logs antigos permanecem imutaveis. Mesa flexora e cadeira flexora permanecem como exercise_id distintos. Evitar agachamento, stiff, levantamento terra, elevacao pelvica, cadeira adutora, cadeira abdutora e exercicios cujo objetivo principal seja gluteo. Feeder/reconhecimento nao conta como serie valida e deve preparar sem gerar fadiga relevante. Volume-alvo por rotacao: 60 series validas, 20 por sessao."
+  "notes": "Programa ativo reorganizado de 4x para 3x por semana em 2026-09-30, com teto de 90 min e prioridade para superiores. Mantem os exercise_id das variantes equivalentes para que os logs do programa anterior upper-focus-4x-2026-09 continuem comparaveis. Logs antigos permanecem imutaveis. Mesa flexora e cadeira flexora permanecem como exercise_id distintos. Evitar agachamento, stiff, levantamento terra, elevacao pelvica, cadeira adutora, cadeira abdutora e exercicios cujo objetivo principal seja gluteo. Feeder/reconhecimento nao conta como serie valida e deve preparar sem gerar fadiga relevante. Volume-alvo por rotacao: 60 series validas, 20 por sessao. Em 2026-10-12 o ciclo foi reiniciado do treino A (cycle_started_on); sessoes anteriores seguem validas como historico comparavel, mas nao definem a rotacao."
 }

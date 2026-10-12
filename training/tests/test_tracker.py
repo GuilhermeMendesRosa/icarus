@@ -139,6 +139,24 @@ class TrackerFlowTest(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertIn("Upper A", output)
 
+    def test_cycle_start_resets_rotation_but_keeps_history(self) -> None:
+        self.call(tracker.cmd_start, session_key=None, readiness=None, sleep_hours=None, bodyweight_kg=None, notes=None)
+        self.call(tracker.cmd_finish, session_rpe=None, duration_minutes=None, notes=None)
+        code, output = self.call(tracker.cmd_today)
+        self.assertIn("Lower A", output)
+
+        target = tracker.paths(self.root)
+        program = tracker.read_json(target["program"])
+        program["cycle_started_on"] = "2999-01-01"
+        target["program"].write_text(json.dumps(program), encoding="utf-8")
+
+        code, output = self.call(tracker.cmd_today)
+        self.assertEqual(code, 0)
+        self.assertIn("Upper A", output)
+        events, errors = tracker.load_events(target["logs"])
+        self.assertFalse(errors)
+        self.assertEqual(len(events), 2)
+
     def test_e1rm_uses_rir_and_rejects_assistance(self) -> None:
         working = {"weight": 80, "reps": 8, "rir": 2, "load_context": "total"}
         assisted = {"weight": 20, "reps": 8, "rir": 2, "load_context": "assisted"}

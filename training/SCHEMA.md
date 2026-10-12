@@ -25,6 +25,8 @@ Não registre diagnóstico, documento, endereço ou informação clínica desnec
 - cada chave existe em `sessions`;
 - cada exercício tem `exercise_id` único dentro da sessão, nome, séries-alvo, faixa de repetições, RIR, descanso e contexto de carga.
 
+`cycle_started_on` (opcional, `YYYY-MM-DD`) reinicia o ciclo: a rotação considera só sessões concluídas iniciadas nessa data ou depois. Sessões anteriores continuam no histórico comparável e nas métricas.
+
 Exemplo de exercício:
 
 ```json

@@ -237,6 +237,14 @@ def ensure_operational(profile: dict[str, Any], program: dict[str, Any]) -> list
 
 def next_session_key(program: dict[str, Any], completed: list[dict[str, Any]]) -> str:
     rotation = program["rotation"]
+    cycle_start = program.get("cycle_started_on")
+    if cycle_start:
+        # Reinício de ciclo: sessões anteriores continuam no histórico, mas não ditam a rotação.
+        completed = [
+            session
+            for session in completed
+            if "started" not in session or session["started"].get("timestamp", "")[:10] >= cycle_start
+        ]
     if not completed:
         return rotation[0]
     last_key = completed[-1].get("session_key")
