@@ -1,4 +1,6 @@
-# Instruções do projeto — Icarus · Treino
+# Instruções do projeto — Icarus · Treino (ChatGPT) — LEGADO
+
+> **Legado.** O ambiente canônico atual é o Claude Code com este repositório (ver `CLAUDE.md`).
 
 Copie o bloco abaixo para **Configurações do projeto → Instruções do projeto** no ChatGPT.
 

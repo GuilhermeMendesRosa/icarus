@@ -8,13 +8,13 @@ Sua missão é ser um parceiro contínuo de treino: transformar objetivo, rotina
 
 ## Ambiente canônico
 
-O ambiente principal do projeto é o **Projeto do Claude (claude.ai) com o repositório privado `GuilhermeMendesRosa/icarus` sincronizado como conhecimento e o conector do Notion ligado**. A branch canônica das instruções é `main`.
+O ambiente principal do projeto é o **Claude Code** (CLI, app ou sessão cloud em claude.ai/code) **com o repositório privado `GuilhermeMendesRosa/icarus` clonado**. A branch canônica é `main`, tanto para instruções quanto para dados de treino.
 
-O repositório é a fonte de verdade para instruções e conhecimento. Desde 2026-10-06, a memória persistente de treino (perfil, programa, sessões e séries) fica no **Notion**, na página `Segundo Cérebro → Icarus`, conforme `.agents/skills/icarus-coaching/references/notion-memory.md`. `training/data/` permanece versionado como arquivo histórico congelado nessa data. Esses dados pessoais de treino foram autorizados pelo proprietário para uso privado neste projeto. Nunca os copie, publique ou mova para outro serviço, repositório público ou resposta compartilhável sem pedido explícito.
+O repositório é a fonte de verdade para instruções, conhecimento e memória de treino. Desde 2026-10-12, perfil, programa, sessões e séries ficam em `training/data/`, lidos e gravados pelo CLI `icarus_tracker.py` e persistidos por commit + push na `main`, conforme `.agents/skills/icarus-coaching/references/repo-memory.md`. O Notion (`Segundo Cérebro → Icarus`) foi o backend entre 2026-10-06 e 2026-10-12 e ficou apenas como arquivo, com conteúdo idêntico ao do repositório; não grave nele. Esses dados pessoais de treino foram autorizados pelo proprietário para uso privado neste projeto. Nunca os copie, publique ou mova para outro serviço, repositório público ou resposta compartilhável sem pedido explícito.
 
-No Claude, operações de treino persistem no Notion conforme `notion-memory.md`. O fluxo antigo do ChatGPT, com escrita no GitHub, continua descrito em `.agents/skills/icarus-coaching/references/github-memory.md` como backend alternativo. Em treino ao vivo, minimize round-trips: carregue no início o estado e o histórico comparável necessários, mantenha os novos eventos em buffer transitório durante a sessão e faça a persistência em lote ao finalizar, cancelar ou em checkpoint explícito. O CLI `icarus_tracker.py` continua como implementação de referência e compatibilidade local, mas **não é requisito** para o Icarus funcionar no ChatGPT.
+No Claude Code, cada evento é gravado localmente pelo tracker no momento do relato, e a persistência (commit + push na `main`) acontece em lote ao finalizar, cancelar ou em checkpoint explícito. Backends legados, mantidos só como referência: ChatGPT com escrita no GitHub (`github-memory.md`) e Projeto do Claude com Notion (`notion-memory.md`).
 
-Nunca diga que um dado foi salvo, persistido ou finalizado antes de a escrita remota retornar sucesso. Durante a sessão, pode confirmar que uma série foi entendida e adicionada ao buffer transitório.
+Nunca diga que um dado foi salvo, persistido ou finalizado antes de o push para a `main` retornar sucesso. Durante a sessão, pode confirmar que uma série foi entendida e registrada localmente.
 
 ## Voz
 
@@ -78,17 +78,16 @@ Não prescreva um volume universal. Use o histórico atual como âncora, comece 
 
 ## Parceiro de treino e memória
 
-O histórico persistente fica no backend de memória ativo (Notion no Claude; `training/data/` só no fluxo legado); nunca dependa apenas da memória da conversa entre sessões. Durante um treino ao vivo, a conversa pode manter um buffer transitório dos eventos ainda não persistidos.
+O histórico persistente fica em `training/data/` na `main`; nunca dependa apenas da memória da conversa entre sessões. Durante um treino ao vivo, eventos gravados localmente e ainda sem push são o buffer transitório.
 
 - “Qual é o treino de hoje?”, “começa o treino”, relato de carga/repetições/RIR, “terminei” e perguntas sobre evolução ativam o modo ao vivo da skill `$icarus-coaching`.
-- No Projeto do Claude, use o backend descrito em `.agents/skills/icarus-coaching/references/notion-memory.md` para ler e gravar.
-- No ChatGPT com GitHub conectado (legado), use `.agents/skills/icarus-coaching/references/github-memory.md`.
-- Em ambiente local com execução de terminal, o CLI `.agents/skills/icarus-coaching/scripts/icarus_tracker.py` pode ser usado como implementação equivalente.
+- No Claude Code, use `.agents/skills/icarus-coaching/references/repo-memory.md`: o CLI `.agents/skills/icarus-coaching/scripts/icarus_tracker.py` lê e grava `training/data/`, e o flush é commit + push na `main`.
+- Legado: ChatGPT com GitHub conectado usa `github-memory.md`; o Notion (`notion-memory.md`) é só arquivo e não recebe mais escrita.
 - No início do treino, carregue o programa ativo, a sessão aplicável e o histórico comparável relevante dos exercícios daquela sessão. Evite novas consultas enquanto esse snapshot for suficiente.
-- Cada relato inequívoco de uma série durante um treino ativo autoriza a criação imediata do evento no buffer transitório, não uma escrita remota por série.
-- Consulte o GitHub no meio do treino apenas quando a decisão depender de dado persistente não carregado, houver ambiguidade material, suspeita de concorrência ou pedido explícito de histórico adicional.
-- Ao finalizar ou cancelar, ou em checkpoint solicitado pelo usuário, releia o arquivo-alvo, reconcilie por `event_id` e persista todos os eventos pendentes em lote, preferencialmente em uma única atualização.
-- Se peso, unidade, exercício ou forma de contabilizar a carga forem ambíguos, esclareça antes de adicionar o evento ao buffer. Halteres usam carga por mão; barras exigem saber se o peso informado inclui a barra; máquinas só são comparáveis com o mesmo ID/configuração.
+- Cada relato inequívoco de uma série durante um treino ativo autoriza o registro local imediato (`log-set`), não um commit/push por série.
+- Faça `git pull` ou consulte o remoto no meio do treino apenas quando a decisão depender de dado persistente não carregado, houver ambiguidade material, suspeita de concorrência ou pedido explícito de histórico adicional.
+- Ao finalizar ou cancelar, ou em checkpoint solicitado pelo usuário, valide, faça commit de `training/data/` e push na `main`; em rejeição, `git pull --rebase`, reconcilie por `event_id` e repita. Sessões cloud são efêmeras: não encerre com eventos sem push.
+- Se peso, unidade, exercício ou forma de contabilizar a carga forem ambíguos, esclareça antes de registrar o evento. Halteres usam carga por mão; barras exigem saber se o peso informado inclui a barra; máquinas só são comparáveis com o mesmo ID/configuração.
 - Treinos finalizados são imutáveis. Sessões canceladas não avançam a rotação.
 - Só declare evolução ou PR entre registros com o mesmo `exercise_id`, unidade e contexto de carga, qualificando por repetições, RIR, técnica, amplitude, dor e equipamento.
 - Não reprograme por uma única sessão ruim. Procure tendência e contexto; em geral, exija ao menos três exposições comparáveis para chamar de platô.
@@ -112,6 +111,6 @@ Leia [knowledge/SAFETY.md](knowledge/SAFETY.md) quando houver dor, lesão, doen�
 - Registre cada fonte em [knowledge/SOURCES.md](knowledge/SOURCES.md) antes de incorporá-la às sínteses.
 - Cada princípio novo deve apontar para fonte e linhas, ou ser marcado como inferência.
 - Evite duplicar a mesma regra em várias skills. `AGENTS.md` contém identidade e invariantes; `knowledge/` contém conhecimento compartilhado; `.agents/skills/` contém fluxos de trabalho.
-- Ao alterar dados de treino remotamente, preserve o schema, o histórico append-only e a branch `main` como fonte canônica. Agrupar vários eventos pendentes em uma única escrita é permitido e preferido no treino ao vivo do ChatGPT.
+- Ao alterar dados de treino, preserve o schema, o histórico append-only e a branch `main` como fonte canônica. Um commit por sessão (no finish/cancel/checkpoint) é o padrão; commits de dados (`training: ...`) ficam separados de mudanças de instruções.
 - Ao alterar skills em ambiente local, execute o validador de skills e o auditor do catálogo descritos no `README.md` quando as ferramentas estiverem disponíveis.
 - Ao alterar a memória de treino em ambiente local, execute `python3 .agents/skills/icarus-coaching/scripts/icarus_tracker.py validate` e os testes do tracker quando possível.

@@ -2,7 +2,7 @@
 
 Esta pasta transforma o Icarus em um parceiro de treino persistente. O programa ativo define o que fazer; cada interação na academia gera um evento; os relatórios são calculados a partir do histórico persistido, sem depender da memória da conversa entre sessões.
 
-Durante um treino ao vivo no ChatGPT, os eventos novos podem permanecer temporariamente em um buffer da conversa para reduzir latência. Esse buffer é descarregado no GitHub ao finalizar, cancelar ou em checkpoint explícito.
+Desde 2026-10-12, o Icarus roda no **Claude Code** com este repositório clonado. Cada série é gravada localmente pelo tracker na hora do relato; ao finalizar, cancelar ou em checkpoint, o agente faz commit de `training/data/` e push na `main`.
 
 ## Arquitetura
 
@@ -15,63 +15,56 @@ training/
     logs/YYYY/MM/*.jsonl        eventos append-only de cada treino
     reports/                    relatórios gerados, quando usados
   SCHEMA.md                     contrato dos dados
+  tests/                        testes do tracker
 .agents/skills/icarus-coaching/
-  references/github-memory.md   backend oficial no ChatGPT
-  scripts/icarus_tracker.py     implementação local/de referência
+  references/repo-memory.md     backend canônico (Claude Code)
+  references/github-memory.md   backend legado (ChatGPT) e regras de comparabilidade
+  references/notion-memory.md   backend legado (Notion), só arquivo
+  scripts/icarus_tracker.py     implementação das operações
 ```
 
 Os logs são append-only. Um treino finalizado não deve ser reescrito; correções entram como novos eventos `set_corrected`. `exercise_id` identifica uma combinação estável de exercício, máquina/implemento e forma de contabilizar a carga.
 
 ## Fonte canônica
 
-O uso principal agora é pelo **ChatGPT conectado ao repositório privado `GuilhermeMendesRosa/icarus`**. A branch `main` é a fonte persistente canônica.
+A branch `main` do repositório privado `GuilhermeMendesRosa/icarus` é a fonte persistente canônica. Um dado só está salvo depois que o push para `origin/main` retornou sucesso.
 
-O proprietário autorizou explicitamente o versionamento de `training/data/` neste repositório privado para permitir continuidade entre conversas e dispositivos. Não torne o repositório público sem antes remover os dados pessoais e considerar a reescrita do histórico Git.
+Histórico de backends: Codex local → ChatGPT com commits no GitHub → Notion (2026-10-06 a 2026-10-12) → Claude Code com o repositório (atual). Na volta do Notion, o conteúdo era idêntico ao de `training/data/` (5 sessões até 2026-09-30), então não houve migração de dados.
 
-O ChatGPT deve usar `.agents/skills/icarus-coaching/references/github-memory.md` para ler e gravar o estado diretamente no GitHub. O `icarus_tracker.py` permanece útil como implementação de referência e para compatibilidade local, mas não é necessário para operar o Icarus no ChatGPT.
-
-## Primeiro uso
-
-Se `training/data/profile.json` e `training/data/active_program.json` ainda não existirem, peça:
-
-> Icarus, quero fazer meu onboarding como parceiro de treino.
-
-O agente deve coletar os dados mínimos, criar os dois arquivos no GitHub, validar logicamente o schema e só então ativar o programa.
-
-Se já existe histórico local anterior, sincronize-o para `training/data/` preservando exatamente os arquivos atuais. O formato local e o remoto é o mesmo; não há migração de schema.
+O proprietário autorizou explicitamente o versionamento de `training/data/` neste repositório privado. Não torne o repositório público sem antes remover os dados pessoais e considerar a reescrita do histórico Git.
 
 ## Uso na academia
 
-No Projeto Icarus do ChatGPT:
+Em uma sessão do Claude Code neste repositório:
 
-1. “Icarus, qual é o treino de hoje?”
-2. “Começa o treino. Prontidão 8, dormi 7 horas.”
-3. “Primeira do supino: 80 kg, 8 reps, 2 RIR.”
-4. “Segunda: 80 por 7, 1 RIR.”
-5. “Terminei. RPE da sessão 8, 64 minutos.”
+1. “Icarus, qual é o treino de hoje?” → `git pull origin main`, `validate`, `today`.
+2. “Começa o treino. Prontidão 8, dormi 7 horas.” → `start`.
+3. “Primeira do supino: 80 kg, 8 reps, 2 RIR.” ou só `80 8 2` → `log-set`.
+4. “Corrige a última: eram 82,5.” → `correct-last-set`.
+5. “Terminei. RPE da sessão 8, 64 minutos.” → `finish` + commit + push.
 
-No passo 1, o agente carrega o programa, a rotação, eventual sessão ativa e o histórico comparável necessário para conduzir aquele treino. Nos passos 2–4, os eventos são criados no buffer transitório da sessão, sem leitura/escrita remota a cada série. No passo 5, `session_completed` entra no buffer e todos os eventos pendentes são persistidos em lote no GitHub, preferencialmente em uma única criação ou atualização do log.
+Se o usuário pedir “salva até aqui”, o agente faz um checkpoint (commit + push) e continua a sessão.
 
-Se o usuário pedir “salva até aqui” ou equivalente, o agente faz um checkpoint: persiste o lote pendente e continua a sessão com um novo buffer somente para os eventos posteriores.
+Detalhes em `.agents/skills/icarus-coaching/references/repo-memory.md`.
 
-## Operações canônicas
+## Operações
 
-A semântica continua sendo:
-
-- `today`: sessão atual/próxima e histórico relevante;
-- `start`: cria `session_started` no estado da sessão;
-- `log-set`: acrescenta `set_logged` ao estado da sessão;
-- `correct-last-set`: acrescenta `set_corrected`, sem apagar o original;
-- `finish`: acrescenta `session_completed` e dispara o flush final;
-- `cancel`: acrescenta `session_cancelled`, faz o flush e não avança rotação;
-- `progress`: calcula evolução apenas entre exposições comparáveis;
-- `validate`: verifica integridade de perfil, programa e eventos.
-
-No ChatGPT essas operações usam o backend GitHub como persistência canônica, mas podem ser agrupadas em um único flush. Localmente, os comandos equivalentes continuam disponíveis em `icarus_tracker.py`.
+```bash
+T=.agents/skills/icarus-coaching/scripts/icarus_tracker.py
+python3 $T validate          # integridade de perfil, programa e eventos
+python3 $T today             # sessão atual/próxima e histórico relevante
+python3 $T start             # session_started
+python3 $T log-set ...       # set_logged
+python3 $T correct-last-set  # set_corrected, sem apagar o original
+python3 $T finish            # session_completed
+python3 $T cancel --reason   # session_cancelled; não avança rotação
+python3 $T progress          # evolução entre exposições comparáveis
+python3 -m unittest discover -s training/tests
+```
 
 ## Concorrência e segurança de escrita
 
-Antes de atualizar um JSONL existente durante um flush, o agente deve reler o arquivo e usar o SHA atual retornado pelo GitHub. Em conflito, deve reler e reconciliar por `event_id`, nunca sobrescrever linhas persistidas nem duplicar eventos já presentes.
+Se o push for rejeitado porque a `main` avançou, faça `git pull --rebase origin main`, rode `validate` e repita. Nunca resolva conflito apagando ou reescrevendo eventos já persistidos; reconcilie por `event_id`.
 
 Treino finalizado é imutável. Uma sessão cancelada não avança a rotação.
 

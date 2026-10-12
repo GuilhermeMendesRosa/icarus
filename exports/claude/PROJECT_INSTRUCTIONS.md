@@ -1,4 +1,6 @@
-# Instruções do projeto — Icarus · Treino (Claude)
+# Instruções do projeto — Icarus · Treino (Claude) — LEGADO
+
+> **Legado (2026-10-06 a 2026-10-12).** O Icarus agora roda no **Claude Code** com este repositório clonado, e a memória de treino volta a ser `training/data/` (ver `CLAUDE.md` e `.agents/skills/icarus-coaching/references/repo-memory.md`). Este Projeto com Notion não deve mais gravar treinos.
 
 ## Configuração no claude.ai
 

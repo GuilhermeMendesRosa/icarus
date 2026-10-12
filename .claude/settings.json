@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 .agents/skills/icarus-coaching/scripts/icarus_tracker.py:*)",
+      "Bash(python3 -m unittest discover -s training/tests:*)",
+      "Bash(git pull origin main:*)",
+      "Bash(git pull --rebase origin main:*)",
+      "Bash(git add training/data:*)",
+      "Bash(git commit -m \"training:*)",
+      "Bash(git push -u origin main)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)"
+    ]
+  }
+}

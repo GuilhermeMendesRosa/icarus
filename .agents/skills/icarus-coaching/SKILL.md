@@ -23,25 +23,25 @@ Entregue uma decisão executável, individualizada e rastreável. Preserve a ide
 
 Escolha o backend disponível sem mudar a semântica dos dados:
 
-- **Projeto do Claude + Notion:** use obrigatoriamente [references/notion-memory.md](references/notion-memory.md). Desde 2026-10-06, o Notion (`Segundo Cérebro → Icarus`) é a fonte canônica dos dados; `training/data/` é arquivo histórico.
-- **ChatGPT + GitHub com escrita (legado):** use [references/github-memory.md](references/github-memory.md).
-- **Ambiente local com terminal:** pode usar `.agents/skills/icarus-coaching/scripts/icarus_tracker.py` como implementação equivalente.
+- **Claude Code (canônico desde 2026-10-12):** use obrigatoriamente [references/repo-memory.md](references/repo-memory.md). O tracker `scripts/icarus_tracker.py` lê e grava `training/data/`; a persistência é commit + push na `main`.
+- **ChatGPT + GitHub com escrita (legado):** [references/github-memory.md](references/github-memory.md).
+- **Projeto do Claude + Notion (legado, só arquivo):** [references/notion-memory.md](references/notion-memory.md). Não grave mais no Notion.
 
-No ChatGPT, priorize baixa latência durante o treino: carregue no início o programa, a sessão aplicável e o histórico comparável necessário; depois mantenha os novos eventos apenas no buffer transitório. Não releia nem grave o GitHub a cada série. Consulte novamente o repositório no meio da sessão somente quando faltar contexto persistente relevante, houver ambiguidade que dependa do histórico, o usuário pedir uma comparação específica ou for necessário reconciliar concorrência.
+Priorize baixa latência durante o treino: carregue no início o programa, a sessão aplicável e o histórico comparável (`today`); depois registre cada série localmente com o tracker, sem commit/push por série.
 
-A persistência normal acontece em lote no encerramento, cancelamento ou quando o usuário pedir explicitamente um checkpoint. Nesse flush, releia o arquivo-alvo imediatamente antes de escrever, reconcilie o estado, preserve eventos existentes e grave todos os eventos pendentes em uma única atualização quando possível. Só confirme que a sessão foi persistida depois do sucesso da escrita ou de uma releitura que prove a presença dos `event_id` pretendidos.
+A persistência normal acontece em lote no encerramento, cancelamento ou quando o usuário pedir explicitamente um checkpoint: valide, faça commit de `training/data/` e push na `main`. Só confirme que a sessão foi persistida depois do push confirmado.
 
 ## Modo parceiro ao vivo
 
 Quando o usuário perguntar o treino do dia, iniciar/encerrar uma sessão, ditar uma série ou pedir evolução:
 
 1. Leia [references/live-workout.md](references/live-workout.md).
-2. Leia também o backend ativo: [references/notion-memory.md](references/notion-memory.md) no Claude; [references/github-memory.md](references/github-memory.md) no ChatGPT.
+2. Leia também o backend ativo: [references/repo-memory.md](references/repo-memory.md) no Claude Code; [references/github-memory.md](references/github-memory.md) no ChatGPT (legado).
 3. No início da interação relevante, carregue o estado persistente necessário para determinar treino atual, sessão ativa, metas e histórico comparável.
 4. Execute semanticamente as operações `today`, `start`, `log-set`, `correct-last-set`, `finish`, `cancel`, `progress` e `validate` usando o backend disponível, distinguindo evento **bufferizado** de evento **persistido**.
-5. Durante a sessão, acumule `session_started`, `set_logged` e `set_corrected` no buffer transitório sem round-trip ao GitHub por série.
-6. Consulte novamente o GitHub apenas quando a decisão atual depender de dado não carregado, quando houver suspeita de alteração concorrente ou quando o usuário pedir algo que exija histórico adicional.
-7. Em `finish`, `cancel` ou checkpoint explícito, faça o flush seguro do buffer para `training/data/` e só então use linguagem como “salvo”, “persistido”, “finalizado” ou equivalente.
+5. Durante a sessão, registre `session_started`, `set_logged` e `set_corrected` localmente com o tracker, sem commit/push por série.
+6. Consulte novamente o remoto apenas quando a decisão atual depender de dado não carregado, quando houver suspeita de alteração concorrente ou quando o usuário pedir algo que exija histórico adicional.
+7. Em `finish`, `cancel` ou checkpoint explícito, faça o flush (commit + push de `training/data/` na `main`) e só então use linguagem como “salvo”, “persistido”, “finalizado” ou equivalente.
 8. Se uma tentativa de flush tiver status incerto, releia antes do retry; não duplique eventos e preserve os mesmos `event_id` da operação pendente.
 9. Se o estado indicar onboarding pendente, conduza-o antes do primeiro treino e valide o programa.
 
@@ -55,7 +55,7 @@ O protocolo de [references/live-workout.md](references/live-workout.md) é obrig
 - mantenha motivação curta, contextual e útil, sem esconder a instrução prática;
 - durante sessão ativa, quando exercício, unidade e contexto de carga estiverem inequívocos, interprete três números isolados como `<carga> <repetições> <RIR>`; por exemplo, `40 10 4` significa 40 kg, 10 reps e RIR 4, respeitando `per_hand` em halteres e a convenção já estabelecida para barras.
 
-O arquivo `scripts/icarus_tracker.py` é a implementação de referência das invariantes, cálculos e formato dos eventos. O backend ChatGPT pode agrupar vários eventos em uma única escrita sem alterar o contrato do JSONL.
+O arquivo `scripts/icarus_tracker.py` é a implementação das invariantes, cálculos e formato dos eventos; no Claude Code, use-o diretamente em vez de escrever JSONL à mão.
 
 ## Regras
 
@@ -65,7 +65,7 @@ O arquivo `scripts/icarus_tracker.py` é a implementação de referência das in
 - Técnicas como top set, back-off, cluster e drop são opcionais e precisam de finalidade.
 - Se houver dor, doença, retorno ou população especial, leia `knowledge/SAFETY.md` e reduza o escopo.
 - Quando atribuir um princípio ao corpus, confirme a fonte em `knowledge/SOURCES.md`.
-- Não use memória conversacional como substituto persistente de `training/data/`; o buffer ao vivo é temporário e deve ser descarregado no backend canônico ao encerrar/cancelar ou em checkpoint explícito.
+- Não use memória conversacional como substituto persistente de `training/data/`; eventos locais sem push são temporários e devem ir para a `main` ao encerrar/cancelar ou em checkpoint explícito.
 - Treinos finalizados são imutáveis; correções são append-only.
-- Antes de qualquer escrita remota em arquivo já existente, releia a versão atual e use o SHA retornado pelo GitHub para evitar perda de concorrência.
+- Se o push for rejeitado, faça `git pull --rebase origin main`, revalide e repita; nunca resolva conflito apagando eventos persistidos.
 - Campos opcionais de treino só entram no evento quando foram informados ou legitimamente derivados; ausência não equivale a zero.

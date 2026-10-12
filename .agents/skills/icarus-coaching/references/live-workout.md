@@ -4,15 +4,15 @@ Use este fluxo quando o usuário estiver na academia, perguntar pelo treino do d
 
 ## Invariantes
 
-- `training/data/` é a memória persistente; a conversa pode manter somente um buffer transitório da sessão atual.
+- `training/data/` na `main` é a memória persistente; eventos registrados localmente e ainda sem push são o buffer transitório da sessão atual.
 - No início, carregue do repositório o programa, a sessão aplicável e o histórico comparável necessário para conduzir o treino.
-- Durante a sessão, não releia nem grave o GitHub a cada série. Acumule os eventos da sessão no buffer transitório.
+- Durante a sessão, não faça commit/push nem releia o remoto a cada série. Registre cada evento localmente com o tracker.
 - Consulte novamente o repositório no meio do treino somente quando faltar contexto persistente relevante, houver ambiguidade dependente do histórico, suspeita de alteração concorrente ou pedido explícito de comparação adicional.
 - Faça a persistência em lote ao finalizar, cancelar ou quando o usuário pedir explicitamente um checkpoint.
 - Nunca invente peso, repetição, RIR, data ou sessão ausente.
 - Treinos finalizados são imutáveis; correções são novos eventos append-only.
 - Não avance a rotação em sessão cancelada.
-- No Claude, use `notion-memory.md`; no ChatGPT (legado), `github-memory.md`; em ambiente local, o tracker pode ser usado.
+- No Claude Code, use `repo-memory.md` (tracker + commit/push na `main`); no ChatGPT (legado), `github-memory.md`. O Notion (`notion-memory.md`) é só arquivo.
 
 ## Experiência no chat durante o treino
 
@@ -95,7 +95,7 @@ Não despeje análise longa antes do treino. Priorize visão geral curta + prime
 
 Ao usuário confirmar que começou, execute semanticamente `start` no buffer da sessão. Prontidão, sono e peso são opcionais; não transforme o começo do treino em interrogatório. Se houver dor ou sintoma relevante, aplique `knowledge/SAFETY.md` antes de iniciar.
 
-Gere `session_id`, `event_id` e `session_started` conforme o schema e mantenha-os no buffer transitório. Não é necessário criar ou atualizar o arquivo remoto nesse momento. Diga que a sessão está em andamento, mas reserve termos como “salvo” ou “persistido” para depois do flush bem-sucedido.
+Gere `session_id`, `event_id` e `session_started` conforme o schema e mantenha-os no buffer transitório (no Claude Code, `icarus_tracker.py start` faz isso no JSONL local). Não é necessário commit/push nesse momento. Diga que a sessão está em andamento, mas reserve termos como “salvo” ou “persistido” para depois do flush bem-sucedido.
 
 Ao iniciar, apresente o primeiro exercício de forma acionável: séries totais, reps, RIR e descanso. Se houver feeders/warm-ups prescritos, separe-os claramente das séries de trabalho e não conte aquecimento como série restante de trabalho.
 
@@ -119,7 +119,7 @@ Depois de aceitar uma série no buffer, responda de forma curta e prática, cont
 
 O descanso e a contagem de séries restantes não devem ser omitidos em uma resposta normal de treino ao vivo.
 
-Não faça round-trip ao GitHub por série. Se a comparação pedida exigir um histórico que não foi carregado no início, consulte o repositório pontualmente.
+Não faça round-trip ao remoto por série; `progress` do tracker lê o histórico local. Se a comparação pedida exigir um histórico que não foi carregado no início, consulte o repositório pontualmente.
 
 Se o usuário corrigir um dado, não apague o evento anterior. Acrescente ao buffer `set_corrected` com `replaces_event_id` apontando para o evento substituído. Se não estiver claro qual série deve ser corrigida, esclareça antes de criar a correção.
 
@@ -148,7 +148,7 @@ A motivação deve fazer parte da condução, mas sem atrapalhar a leitura rápi
 
 ## Checkpoint opcional
 
-Se o usuário pedir explicitamente para salvar o progresso antes do fim, faça um flush dos eventos pendentes para o log remoto usando `github-memory.md`. Depois do sucesso, mantenha a sessão ativa e continue acumulando apenas os eventos novos no buffer.
+Se o usuário pedir explicitamente para salvar o progresso antes do fim, faça o flush (commit + push na `main`) conforme `repo-memory.md`. Depois do sucesso, mantenha a sessão ativa e continue registrando os eventos novos localmente.
 
 ## Encerramento
 

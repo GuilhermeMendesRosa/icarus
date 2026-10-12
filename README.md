@@ -2,91 +2,68 @@
 
 Icarus é um agente de coaching de treino resistido baseado em ciência, com foco em praticantes naturais e personalidade inspirada no conteúdo educacional de Ícaro Lermen.
 
-O uso principal é por um **Projeto do Claude** (web, desktop ou celular). O repositório privado `GuilhermeMendesRosa/icarus` entra como conhecimento sincronizado do GitHub, com as instruções do agente e a base de conhecimento. A memória persistente de treino fica no **Notion** (`Segundo Cérebro → Icarus`).
+O uso principal é pelo **Claude Code** (CLI, app desktop/celular ou sessão cloud em claude.ai/code) com este repositório privado `GuilhermeMendesRosa/icarus` clonado. Instruções, conhecimento **e** memória de treino ficam no próprio repositório: cada treino é registrado em `training/data/` e persistido por commit + push na `main`.
 
 ## Como funciona
 
-Ao iniciar uma conversa no Projeto Icarus, o agente consulta no conhecimento sincronizado:
+Ao abrir uma sessão do Claude Code no repositório:
 
-- `AGENTS.md` para identidade, comportamento e invariantes;
-- `knowledge/INDEX.md` para roteamento;
-- `.agents/skills/` para o fluxo aplicável;
-- o Notion, via `.agents/skills/icarus-coaching/references/notion-memory.md`, para perfil, programa ativo e histórico persistente.
-
-O objetivo é que o chat aja como interface do agente definido no repositório, em vez de manter uma cópia separada das regras.
+- `CLAUDE.md` carrega `AGENTS.md` (identidade, comportamento e invariantes) e as regras específicas do Claude Code;
+- `.claude/skills/` aponta para `.agents/skills/`, então `icarus-coaching`, `icarus-evidence` e `icarus-corpus` ficam disponíveis como skills;
+- `knowledge/INDEX.md` faz o roteamento do conhecimento;
+- `.agents/skills/icarus-coaching/scripts/icarus_tracker.py` lê e grava perfil, programa e sessões em `training/data/`, conforme `.agents/skills/icarus-coaching/references/repo-memory.md`;
+- `.claude/settings.json` libera sem prompt os comandos do tracker e o commit/push dos dados de treino.
 
 ## Estrutura
 
 ```text
+CLAUDE.md                 entrada do Claude Code (importa AGENTS.md)
 AGENTS.md                 identidade, comportamento e invariantes
 knowledge/                sínteses, evidência, segurança e roteamento
 icaro/                    transcrições originais e artefatos derivados
 training/
   SCHEMA.md               contrato dos dados
-  README.md               arquitetura da memória
-  data/                   arquivo histórico (congelado em 2026-10-06; estado atual no Notion)
+  README.md               arquitetura da memória e fluxo na academia
+  data/                   memória persistente (perfil, programa, logs)
+  tests/                  testes do tracker
 .agents/skills/
   icarus-coaching/        criação, acompanhamento ao vivo e evolução
   icarus-evidence/        perguntas conceituais e checagem científica
   icarus-corpus/          ingestão e manutenção das transcrições
-exports/claude/
-  PROJECT_INSTRUCTIONS.md setup e bootstrap do Projeto do Claude
-exports/chatgpt/
-  PROJECT_INSTRUCTIONS.md bootstrap do Projeto do ChatGPT (legado)
+.claude/
+  skills -> ../.agents/skills
+  settings.json           permissões do fluxo de treino
+exports/                  bootstraps legados (Projeto do Claude com Notion, ChatGPT)
 ```
 
-## Configuração recomendada no Claude
+## Treino ao vivo
 
-Siga `exports/claude/PROJECT_INSTRUCTIONS.md`. Em resumo: crie o Projeto **Icarus — Treino**, adicione este repositório como conhecimento via GitHub (sem `training/data/`), ligue o conector do Notion e cole o bloco de instruções. Depois de mudar regras no repo, faça push e sincronize o conhecimento do Projeto.
+1. “Icarus, qual é o treino de hoje?” — atualiza a `main`, valida e mostra a sessão com o histórico comparável.
+2. “Começa o treino.” — abre a sessão.
+3. `80 8 2` ou “Supino: 80 kg, 8 reps, 2 RIR.” — registra a série localmente e mostra quanto falta e o descanso.
+4. “Terminei. RPE 8, 60 minutos.” — finaliza, valida, faz commit e push na `main`. Só então o Icarus diz que salvou.
 
-O backend de memória está em `.agents/skills/icarus-coaching/references/notion-memory.md`: bancos **Sessões**, **Séries**, **Prescrição** e **Exercícios**, mais as páginas **Perfil** e **Programa ativo**. Dá para acompanhar tudo também pelo app do Notion.
-
-## Configuração no ChatGPT (legado)
-
-1. Crie um Projeto chamado **Icarus — Treino**.
-2. Conecte o GitHub com acesso ao repositório privado `GuilhermeMendesRosa/icarus`.
-3. Copie o bloco de `exports/chatgpt/PROJECT_INSTRUCTIONS.md` para as instruções do Projeto.
-4. Inicie um chat com algo como `Icarus, qual é meu treino hoje?`.
-
-As instruções do Projeto são apenas um bootstrap. O comportamento real deve ser carregado da versão atual do repositório.
-
-## Treino ao vivo no ChatGPT
-
-O backend oficial está em:
-
-`.agents/skills/icarus-coaching/references/github-memory.md`
-
-Com GitHub conectado para leitura e escrita, o Icarus consegue:
-
-- recuperar o treino atual;
-- iniciar sessão;
-- registrar cada série;
-- corrigir série sem apagar o evento anterior;
-- finalizar ou cancelar treino;
-- comparar exposições equivalentes;
-- acompanhar tendência e progressão entre conversas.
-
-Cada gravação só é confirmada depois do sucesso da escrita no GitHub.
+Sessões cloud são efêmeras: o Icarus não encerra uma sessão finalizada sem confirmar o push.
 
 ## Memória persistente
 
-Desde 2026-10-06, a memória canônica fica no Notion (ver acima). No fluxo legado do ChatGPT, ela ficava em `training/data/`:
-
-- `profile.json`;
-- `active_program.json`;
-- `logs/YYYY/MM/*.jsonl`.
+- `training/data/profile.json`;
+- `training/data/active_program.json`;
+- `training/data/logs/YYYY/MM/*.jsonl`.
 
 Esses dados são versionados intencionalmente porque este repositório é privado e o proprietário autorizou o uso como backend pessoal do Icarus. Não torne o repositório público sem antes remover os dados e considerar o histórico Git.
 
-## Compatibilidade local
-
-`.agents/skills/icarus-coaching/scripts/icarus_tracker.py` permanece no projeto como implementação de referência e pode continuar sendo executado localmente. O formato de dados é o mesmo usado pelo ChatGPT, então um histórico local anterior pode ser sincronizado sem conversão.
-
-Exemplo de validação local, se desejado:
+Validação local:
 
 ```bash
 python3 .agents/skills/icarus-coaching/scripts/icarus_tracker.py validate
+python3 -m unittest discover -s training/tests
 ```
+
+## Backends legados
+
+- **Projeto do Claude + Notion** (2026-10-06 a 2026-10-12): `exports/claude/PROJECT_INSTRUCTIONS.md` e `references/notion-memory.md`. O Notion ficou só como arquivo, com o mesmo conteúdo do repositório.
+- **ChatGPT + GitHub**: `exports/chatgpt/PROJECT_INSTRUCTIONS.md` e `references/github-memory.md`.
 
 ## Exemplos de uso
 
@@ -99,4 +76,4 @@ python3 .agents/skills/icarus-coaching/scripts/icarus_tracker.py validate
 - “Audite meu treino e descubra o principal gargalo.”
 - “O que o corpus diz sobre volume para naturais e o que a ciência atual diz?”
 
-Também é possível invocar explicitamente `$icarus-coaching`, `$icarus-evidence` ou `$icarus-corpus` quando o ambiente oferecer esse mecanismo.
+No Claude Code, também dá para invocar as skills explicitamente com `/icarus-coaching`, `/icarus-evidence` ou `/icarus-corpus`.

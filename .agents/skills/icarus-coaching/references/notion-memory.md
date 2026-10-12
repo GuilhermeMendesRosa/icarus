@@ -1,4 +1,6 @@
-# Backend de memória no Notion
+# Backend de memória no Notion (legado, somente arquivo)
+
+> **Legado.** Usado entre 2026-10-06 e 2026-10-12. Desde 2026-10-12 o backend canônico é o repositório via Claude Code ([repo-memory.md](repo-memory.md)). Na migração de volta, o Notion tinha exatamente as mesmas 5 sessões (até 2026-09-30) e o mesmo perfil/programa de `training/data/`. **Não grave mais no Notion**; o texto abaixo fica só como referência histórica.
 
 Este é o backend canônico do Icarus quando executado no **Projeto do Claude (claude.ai, web, desktop ou celular)** com o conector do Notion ligado. As instruções e o conhecimento chegam pelo sync do GitHub (somente leitura); os dados de treino são lidos e gravados no Notion.
 

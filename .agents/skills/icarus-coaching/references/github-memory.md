@@ -1,6 +1,6 @@
 # Backend de memória no GitHub
 
-Este é o backend canônico do Icarus quando executado no ChatGPT com acesso de leitura e escrita ao repositório privado `GuilhermeMendesRosa/icarus`.
+Este é o backend **legado** do Icarus no ChatGPT com acesso de leitura e escrita ao repositório privado `GuilhermeMendesRosa/icarus`. O backend canônico atual é o Claude Code com o tracker local e commit/push na `main` ([repo-memory.md](repo-memory.md)); as regras de comparabilidade, e1RM, volume e validação deste arquivo continuam valendo para ele.
 
 A branch canônica é `main`.
 

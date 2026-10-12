@@ -3,5 +3,5 @@ __pycache__/
 *.py[cod]
 
 # training/data/ é versionado intencionalmente: o repositório privado é o backend
-# persistente do Icarus no ChatGPT. Não torne este repositório público sem antes
+# persistente do Icarus (Claude Code, commit + push na main). Não torne este repositório público sem antes
 # remover os dados pessoais e, se necessário, reescrever o histórico do Git.
